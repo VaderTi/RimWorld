@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  
+	<IndoorUnit.label>Климат Контроль</IndoorUnit.label>
+	<IndoorUnit.description>Система климат контроля. Устанавливает минимальную и максимальную комфортную температуру и удерживает ее.</IndoorUnit.description>
+	
+</LanguageData>

@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Buildings>
+
+	<ThingDef Name="BuildingBase" Abstract="True">
+		<category>Building</category>
+		<soundImpactDefault>BulletImpactMetal</soundImpactDefault>
+		<selectable>true</selectable>
+		<drawerType>MapMeshAndRealTime</drawerType>
+		<terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
+		<repairEffect>Repair</repairEffect>
+	</ThingDef>
+
+	<ThingDef ParentName="BuildingBase">
+		<defName>ThreatSensor</defName>
+		<eType>BuildingComplex</eType>
+		<thingClass>GCRD.ThreatSensor</thingClass>
+		<label>Детектор угроз</label>
+		<description>Детектор угроз сканирует окружающее пространство в поисках угроз. Если установлены умные лампы или туррели управляет их поведением.</description>
+		<graphicPath>Things/Building/ThreatSensor</graphicPath>
+		<graphicClass>Graphic_Single</graphicClass>
+		<altitudeLayer>Waist</altitudeLayer>
+		<statBases>
+			<MaxHealth>100</MaxHealth>
+			<WorkToMake>1000</WorkToMake>
+			<Flammability>0.5</Flammability>
+		</statBases>
+		<selectable>true</selectable>
+		<size>(1,1)</size>
+		<tickerType>Normal</tickerType>
+		<costList>
+			<Steel>100</Steel>
+		</costList>
+		<filthLeavings>
+			<SlagRubble>1</SlagRubble>
+		</filthLeavings>
+		<comps>
+			<li>
+			<compClass>CompPowerTrader</compClass>
+			<basePowerConsumption>100</basePowerConsumption>
+			<soundPowerOn>PowerOnSmall</soundPowerOn>
+			<soundPowerOff>PowerOffSmall</soundPowerOff>
+			</li>
+		</comps>
+		<designationCategory>Misc</designationCategory>
+		<sunShadowInfo>
+			<basewidth>0.3</basewidth>
+			<baseHeight>0.3</baseHeight>
+			<tallness>0.6</tallness>
+		</sunShadowInfo>
+		<rotatable>false</rotatable>
+		<placeWorkers>
+			<li>PlaceWorker_NotUnderRoof</li>
+		</placeWorkers>
+	</ThingDef>
+
+</Buildings>

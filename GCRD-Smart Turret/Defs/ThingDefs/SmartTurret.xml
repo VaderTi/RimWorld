@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Buildings>
+
+	<ThingDef Name="BuildingBase" Abstract="True">
+		<category>Building</category>
+		<soundImpactDefault>BulletImpactMetal</soundImpactDefault>
+		<selectable>true</selectable>
+		<drawerType>MapMeshAndRealTime</drawerType>
+		<terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
+		<repairEffect>Repair</repairEffect>
+	</ThingDef>
+
+	<ThingDef ParentName="BuildingBase">
+		<defName>SmartTurret</defName>
+		<eType>Building_Turret</eType>
+		<thingClass>GCRD.SmartTurret</thingClass>
+		<label>Умная турель</label>
+		<description>Умная туррель работает в паре с детектором угроз.</description>
+		<graphicPath>Things/Building/Security/TurretImprovised</graphicPath>
+		<graphicClass>Graphic_Single</graphicClass>
+		<altitudeLayer>Waist</altitudeLayer>
+		<statBases>
+			<MaxHealth>140</MaxHealth>
+			<Flammability>1.0</Flammability>
+			<WorkToMake>2500</WorkToMake>
+			<Beauty>-60</Beauty>
+		</statBases>
+		<tickerType>Normal</tickerType>
+		<comps>
+			<li>
+				<compClass>CompExplosive</compClass>
+				<explosiveRadius>3.9</explosiveRadius>
+				<explosiveDamageType>Bomb</explosiveDamageType>
+			</li>
+			<li>
+				<compClass>CompForbiddable</compClass>
+			</li>
+			<li>
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>350</basePowerConsumption>
+			</li>
+		</comps>
+		<size>(1,1)</size>
+		<passability>Impassable</passability>
+		<castEdgeShadows>true</castEdgeShadows>
+		<fillPercent>0.4</fillPercent>
+		<graphicOverdraw>true</graphicOverdraw>
+		<stuffCategories>
+			<li>Metallic</li>
+		</stuffCategories>
+		<costStuffCount>80</costStuffCount>
+		<costList>
+			<Steel>80</Steel>
+		</costList>
+		<combatTargetBuilding>true</combatTargetBuilding>
+		<filthLeavings>
+			<SlagRubble>1</SlagRubble>
+		</filthLeavings>
+		<leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
+		<terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
+		<designationCategory>Security</designationCategory>
+		<specialDisplayRadius>25.9</specialDisplayRadius>
+		<building>
+			<turretGunDef>Gun_TurretImprovised</turretGunDef>
+			<turretBurstCooldownTicks>400</turretBurstCooldownTicks>
+			<turretTopgraphicPath>Things/Building/Security/TurretImprovised_Top</turretTopgraphicPath>
+		</building>
+	</ThingDef>
+
+</Buildings>

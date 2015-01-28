@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>GCRD-Smart Turret</name>
+  <author>Vader</author>
+  <url></url>
+  <targetVersion>Alpha 8</targetVersion>
+  <description>
+	Turret with motion detector
+  </description>
+</ModMetaData>

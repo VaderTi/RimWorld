@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Buildings>
+
+	<ThingDef Name="BuildingBase" Abstract="True">
+		<category>Building</category>
+		<soundImpactDefault>BulletImpactMetal</soundImpactDefault>
+		<selectable>true</selectable>
+		<drawerType>MapMeshAndRealTime</drawerType>
+		<terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
+		<repairEffect>Repair</repairEffect>
+	</ThingDef>
+
+	<ThingDef ParentName="BuildingBase">
+		<eType>BuildingComplex</eType>
+		<thingClass>GCRD.SmartLamp</thingClass>
+		<defName>SmartLamp</defName>
+		<label>Умная лампа</label>
+		<description>Умная лампа на светодиодах. Также имеет встроенный датчик движения что позволяет экономить энергию когда комната пуста.</description>
+		<graphicPath>Things/Building/Furniture/LampStanding</graphicPath>
+		<graphicClass>Graphic_Single</graphicClass>
+		<altitudeLayer>BuildingTall</altitudeLayer>
+		<passability>PassThroughOnly</passability>
+		<rotatable>false</rotatable>
+		<statBases>
+			<MaxHealth>50</MaxHealth>
+			<WorkToMake>115</WorkToMake>
+			<Flammability>1.0</Flammability>
+		</statBases>
+		<selectable>true</selectable>
+		<size>(1,1)</size>
+		<tickerType>Normal</tickerType>
+		<costList>
+			<Steel>15</Steel>
+		</costList>
+		<soundImpactDefault>BulletImpactMetal</soundImpactDefault>
+		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
+		<comps>
+			<li>
+				<compClass>CompPowerTrader</compClass>
+				<basePowerConsumption>50</basePowerConsumption>
+				<startElectricalFires>true</startElectricalFires>
+				<soundPowerOn>PowerOnSmall</soundPowerOn>
+				<soundPowerOff>PowerOffSmall</soundPowerOff>
+			</li>
+			<li>
+				<compClass>CompGlower</compClass>
+				<glowRadius>12</glowRadius>
+				<glowColor>(217,217,208,0)</glowColor>
+			</li>
+		</comps>
+		<designationCategory>Furniture</designationCategory>
+		<sunShadowInfo>
+			<basewidth>0.3</basewidth>
+			<baseHeight>0.3</baseHeight>
+			<tallness>0.6</tallness>
+			<offset>(0,0,-0.1)</offset>
+		</sunShadowInfo>
+	</ThingDef>
+
+</Buildings>

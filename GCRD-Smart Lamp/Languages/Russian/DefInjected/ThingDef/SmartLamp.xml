@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+	<SmartLamp.label>Умная лампа</SmartLamp.label>
+	<SmartLamp.description>Умная лампа на светодиодах. Также имеет встроенный датчик движения что позволяет экономить энергию когда комната пуста.</SmartLamp.description>
+</LanguageData>

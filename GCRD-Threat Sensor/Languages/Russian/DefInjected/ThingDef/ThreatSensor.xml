@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+	<ThreatSensor.label>Детектор угроз</ThreatSensor.label>
+	<ThreatSensor.description>Детектор угроз сканирует окружающее пространство в поисках угроз. Если установлены умные лампы или туррели управляет их поведением.</ThreatSensor.description>
+</LanguageData>
