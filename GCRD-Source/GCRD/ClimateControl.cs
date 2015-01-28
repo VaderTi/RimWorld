@@ -15,7 +15,7 @@ namespace GCRD
         Outdoor
     }
 
-    internal class IndoorUnit : Building
+    internal class ClimateControl : Building
     {
         private const string TxtMinus = "-1";
         private const string TxtPlus = "+1";

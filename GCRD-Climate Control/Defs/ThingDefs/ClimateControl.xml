@@ -11,12 +11,12 @@
 	</ThingDef>
 
 	<ThingDef ParentName="BuildingBase">
-		<defName>IndoorUnit</defName>
+		<defName>ClimateControl</defName>
 		<eType>Building_TempController</eType>
-		<thingClass>GCRD.IndoorUnit</thingClass>
+		<thingClass>GCRD.ClimateControl</thingClass>
 		<label>Климат контроль</label>
 		<description>Система климат контроля. Устанавливает минимальную и максимальную комфортную температуру и удерживает ее.</description>
-		<graphicPath>Things/ClimateControl/IndoorUnit</graphicPath>
+		<graphicPath>Things/ClimateControl/ClimateControl</graphicPath>
 		<graphicClass>Graphic_Single</graphicClass>
 		<altitudeLayer>BuildingTall</altitudeLayer>
 		<passability>PassThroughOnly</passability>
@@ -42,7 +42,7 @@
 		<leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
 		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
 		<placeWorkers>
-			<li>GCRD.PlaceWorker_IndoorUnit</li>
+			<li>GCRD.PlaceWorker_ClimateControl</li>
 		</placeWorkers>
 		<drawPlaceWorkersWhileSelected>true</drawPlaceWorkersWhileSelected>
 		<comps>

@@ -137,11 +137,11 @@ namespace GCRD
         private void TryConnectToThreatSensor()
         {
             var sensor = Find.ListerBuildings.AllBuildingsColonistOfClass<ThreatSensor>();
-            if (sensor.Any())
-            {
-                sensor.FirstOrDefault().RegisterLamp(this);
-                _isConnectedToThreatSensor = true;
-            }
+            if (!sensor.Any()) return;
+
+            sensor.FirstOrDefault().RegisterLamp(this);
+            _isConnectedToThreatSensor = true;
+
         }
 
         public override string GetInspectString()

@@ -7,12 +7,12 @@ namespace GCRD
 {
     public class SmartTurret : Building_TurretGun
     {
+        private const float PowerConsumptionPerTile = 13.51f;
         private float _basePowerConsumption;
         private int _counter;
         private bool _isConnectedToThreatSensor;
         private bool _isThreatSensorLoaded;
         private float _range;
-        private const float PowerConsumptionPerTile = 13.51f;
         private string _txtPowerConnectedRateStored = "Мощность сети/аккумулировано: {0} Вт / {1} Вт*дней";
         private string _txtPowerNeeded = "Потребляемая мощность";
         private string _txtPowerNotConnected = "Не подключено к сети.";
@@ -72,7 +72,7 @@ namespace GCRD
 
                         case AlertStatus.Intruders:
                             powerComp.powerOutput = _basePowerConsumption;
-                            gun.PrimaryVerb.verbProps.range = def.specialDisplayRadius =_range;
+                            gun.PrimaryVerb.verbProps.range = def.specialDisplayRadius = _range;
                             break;
                     }
                 }
@@ -97,11 +97,10 @@ namespace GCRD
         private void TryConnectToThreatSensor()
         {
             var sensor = Find.ListerBuildings.AllBuildingsColonistOfClass<ThreatSensor>();
-            if (sensor.Any())
-            {
-                sensor.FirstOrDefault().RegisterTurret(this);
-                _isConnectedToThreatSensor = true;
-            }
+            if (!sensor.Any()) return;
+
+            sensor.FirstOrDefault().RegisterTurret(this);
+            _isConnectedToThreatSensor = true;
         }
 
         public override string GetInspectString()

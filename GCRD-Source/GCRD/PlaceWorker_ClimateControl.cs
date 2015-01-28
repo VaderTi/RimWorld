@@ -4,9 +4,9 @@ using Verse;
 
 namespace GCRD
 {
-    internal class PlaceWorker_IndoorUnit : PlaceWorker
+    internal class PlaceWorker_ClimateControl : PlaceWorker
     {
-        private IndoorUnit _indoorUnit;
+        private ClimateControl _indoorUnit;
 
         public override void DrawGhost(ThingDef def, IntVec3 center, IntRot rot)
         {
@@ -14,7 +14,7 @@ namespace GCRD
 
             if (room == null || room.UsesOutdoorTemperature) return;
 
-            _indoorUnit = room.ContainedThingsOfType<IndoorUnit>().FirstOrDefault();
+            _indoorUnit = room.ContainedThingsOfType<ClimateControl>().FirstOrDefault();
 
             if (_indoorUnit == null) return;
             var status = _indoorUnit.WorkStatus;
