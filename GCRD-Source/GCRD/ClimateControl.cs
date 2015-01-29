@@ -17,8 +17,6 @@ namespace GCRD
 
     internal class ClimateControl : Building
     {
-        private const string TxtMinus = "-1";
-        private const string TxtPlus = "+1";
         private const float EfficiencyLossPerDegreeDifference = 0.007692308f;
         private static Texture2D _txUiMinTempMinus;
         private static Texture2D _txUiMinTempPlus;
@@ -34,6 +32,8 @@ namespace GCRD
         private string _txtMinComfortTemp = "Минимальная комфортная температура";
         private string _txtMinTempMinus = "Понижает минимально комфортную температуру.";
         private string _txtMinTempPlus = "Повышает минимально комфортную температуру.";
+        private string _txtMinus;
+        private string _txtPlus;
         private string _txtPowerConnectedRateStored = "Мощность сети/аккумулировано: {0} Вт / {1} Вт*дней";
         private string _txtPowerNeeded = "Потребляемая мощность";
         private string _txtPowerNotConnected = "Не подключено к сети.";
@@ -58,6 +58,9 @@ namespace GCRD
             base.SpawnSetup();
 
             GetTextures();
+
+            _txtMinus = (Prefs.TemperatureMode == TemperatureDisplayMode.Celsius) ? "-1" : "-2";
+            _txtPlus = (Prefs.TemperatureMode == TemperatureDisplayMode.Celsius) ? "1" : "2";
 
             _txtMinTempMinus = "MinTempMinus".Translate();
             _txtMinTempPlus = "MinTempPlus".Translate();
@@ -178,7 +181,7 @@ namespace GCRD
 
             var actionMinTempMinus = new Command_Action();
             actionMinTempMinus.icon = _txUiMinTempMinus;
-            actionMinTempMinus.defaultLabel = TxtMinus;
+            actionMinTempMinus.defaultLabel = _txtMinus;
             actionMinTempMinus.defaultDesc = _txtMinTempMinus;
             actionMinTempMinus.activateSound = SoundDef.Named("Click");
             actionMinTempMinus.action = MinTempMinus;
@@ -187,7 +190,7 @@ namespace GCRD
 
             var actionMinTempPlus = new Command_Action();
             actionMinTempPlus.icon = _txUiMinTempPlus;
-            actionMinTempPlus.defaultLabel = TxtPlus;
+            actionMinTempPlus.defaultLabel = _txtPlus;
             actionMinTempPlus.defaultDesc = _txtMinTempPlus;
             actionMinTempPlus.activateSound = SoundDef.Named("Click");
             actionMinTempPlus.action = MinTempPlus;
@@ -196,7 +199,7 @@ namespace GCRD
 
             var actionMaxTempMinus = new Command_Action();
             actionMaxTempMinus.icon = _txUiMaxTempMinus;
-            actionMaxTempMinus.defaultLabel = TxtMinus;
+            actionMaxTempMinus.defaultLabel = _txtMinus;
             actionMaxTempMinus.defaultDesc = _txtMaxTempMinus;
             actionMaxTempMinus.activateSound = SoundDef.Named("Click");
             actionMaxTempMinus.action = MaxTempMinus;
@@ -205,7 +208,7 @@ namespace GCRD
 
             var actionMaxTempPlus = new Command_Action();
             actionMaxTempPlus.icon = _txUiMaxTempPlus;
-            actionMaxTempPlus.defaultLabel = TxtPlus;
+            actionMaxTempPlus.defaultLabel = _txtPlus;
             actionMaxTempPlus.defaultDesc = _txtMaxTempPlus;
             actionMaxTempPlus.activateSound = SoundDef.Named("Click");
             actionMaxTempPlus.action = MaxTempPlus;
@@ -237,8 +240,8 @@ namespace GCRD
                 var pcrs = (int) (_powerTrader.PowerNet.CurrentEnergyGainRate()/CompPower.WattsToWattDaysPerTick);
                 stringBuilder.AppendLine(_txtStatus + ": " + statusstring);
                 stringBuilder.AppendLine(_txtPowerNeeded + ": " + -(int) _powerTrader.powerOutput + " " + _txtWatt);
-                stringBuilder.AppendLine(_txtMinComfortTemp + ": " + _minComfortTemp.ToString("F0"));
-                stringBuilder.AppendLine(_txtMaxComfortTemp + ": " + _maxComfortTemp.ToString("F0"));
+                stringBuilder.AppendLine(_txtMinComfortTemp + ": " + _minComfortTemp.ToStringTemperature("F0"));
+                stringBuilder.AppendLine(_txtMaxComfortTemp + ": " + _maxComfortTemp.ToStringTemperature("F0"));
                 stringBuilder.AppendLine(string.Format(_txtPowerConnectedRateStored, pcrs,
                     _powerTrader.PowerNet.CurrentStoredEnergy().ToString("F0")));
             }

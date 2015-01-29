@@ -56,6 +56,7 @@
     <Compile Include="ClimateControl.cs" />
     <Compile Include="PlaceWorker_ClimateControl.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SmartMine.cs" />
     <Compile Include="SmartTurret.cs" />
     <Compile Include="ThreatSensor.cs" />
   </ItemGroup>

@@ -64,6 +64,11 @@ namespace GCRD
 
         public override void Tick()
         {
+            if (!_powerTrader.PowerOn)
+            {
+                base.Tick();
+                return;
+            }
             if (_isDelayCounter) ++_delayCounter;
             ++_counter;
             if (_counter == 60)
@@ -141,7 +146,6 @@ namespace GCRD
 
             sensor.FirstOrDefault().RegisterLamp(this);
             _isConnectedToThreatSensor = true;
-
         }
 
         public override string GetInspectString()
