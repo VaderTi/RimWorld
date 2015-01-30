@@ -143,7 +143,6 @@ namespace GCRD
 
             _powerTrader.powerOutput = -needPower;
             ChangeTemp(enegyLimit);
-            //Log.Warning("Tick Rare");
         }
 
         private void ChangeTemp(float energy)

@@ -6,22 +6,15 @@ namespace GCRD
     internal class SmartMine : Building
     {
         private int _counter;
-        private int _delay = 30;
+        //private int _delay = 30;
         private CompExplosive _explosive;
-        private Graphic_Single _graphicSingle;
         private bool _isArmed;
-        //public override Graphic Graphic
-        //{
-        //    get { return _graphicSingle; }
-        //}
 
         public override void SpawnSetup()
         {
             base.SpawnSetup();
 
             _explosive = GetComp<CompExplosive>();
-
-            //_graphicSingle = new Graphic_Single(MaterialPool.MatFrom("Things/Weapons/SmartMine"), false);
         }
 
         public override void Tick()
@@ -40,7 +33,11 @@ namespace GCRD
                         var pawn = thing as Pawn;
                         foreach (var hpawn in Find.ListerPawns.PawnsHostileToColony)
                         {
-                            if (hpawn != null && hpawn == pawn) Detonate();
+                            if (hpawn != null && hpawn == pawn)
+                            {
+                                Detonate();
+                                return;
+                            }
                         }
                     }
                 }

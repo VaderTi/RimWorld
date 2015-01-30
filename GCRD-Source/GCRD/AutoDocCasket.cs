@@ -76,8 +76,6 @@ namespace GCRD
                     return;
                 }
 
-                if (!healthTracker.bodyModel.GetTreatableInjuries().Any()) return;
-
                 foreach (var injury in
                     from x in healthTracker.bodyModel.GetTreatableInjuries()
                     orderby x.damageAmount descending
@@ -88,16 +86,12 @@ namespace GCRD
                     injury.treatedWithMedicine = true;
                 }
 
-                if (!healthTracker.bodyModel.GetTreatableDiseases().Any()) return;
-
-                foreach (var disease in
-                    from x in healthTracker.bodyModel.GetTreatableDiseases()
-                    orderby x.Immunity ascending
-                    select x)
+                foreach (var immunity in healthTracker.bodyModel.immunities)
                 {
-                    disease.IsTreated = true;
-                    disease.lastTreatmentQuality = 1.0f;
-                    disease.def.disease.immunityPerDay = 0.5f;
+                    if (immunity.immunity < 1.0f)
+                    {
+                        immunity.immunity = 0.95f;
+                    }
                 }
             }
 
@@ -118,7 +112,7 @@ namespace GCRD
 
             if (_powerTrader.PowerNet.hasPowerSource)
             {
-                var pcrs = _powerTrader.PowerNet.CurrentEnergyGainRate()/CompPower.WattsToWattDaysPerTick;
+                var pcrs = (int)_powerTrader.PowerNet.CurrentEnergyGainRate()/CompPower.WattsToWattDaysPerTick;
                 stringBuilder.AppendLine(_txtPowerNeeded + ": " + -_powerTrader.powerOutput + " " + _txtWatt);
                 stringBuilder.AppendLine(string.Format(_txtPowerConnectedRateStored, pcrs,
                     _powerTrader.PowerNet.CurrentStoredEnergy().ToString("F0")));
