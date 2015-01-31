@@ -98,6 +98,7 @@ namespace GCRD
                             _glower.props.glowColor = _alertNormal;
                             break;
                     }
+                    Log.Message("Alert Status: " + );
                 }
                 else
                 {
