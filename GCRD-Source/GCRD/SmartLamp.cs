@@ -133,7 +133,7 @@ namespace GCRD
             if (_counter == 120)
             {
                 _counter = 1;
-                TryConnectToThreatSensor();
+                if (Sensor == null) TryConnectToThreatSensor();
             }
 
             base.Tick();

@@ -49,9 +49,6 @@ namespace GCRD
 
             _isThreatSensorLoaded = true;
             TryConnectToThreatSensor();
-
-            Log.Warning("Display radius: " + def.specialDisplayRadius);
-            Log.Warning("Fire radius: " + gun.PrimaryVerb.verbProps.range);
         }
 
         public override void Tick()
@@ -88,7 +85,7 @@ namespace GCRD
             if (_counter == 120)
             {
                 _counter = 1;
-                TryConnectToThreatSensor();
+                if (Sensor == null) TryConnectToThreatSensor();
             }
 
             base.Tick();

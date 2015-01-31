@@ -59,8 +59,8 @@ namespace GCRD
 
             GetTextures();
 
-            _txtMinus = (Prefs.TemperatureMode == TemperatureDisplayMode.Celsius) ? "-1" : "-2";
-            _txtPlus = (Prefs.TemperatureMode == TemperatureDisplayMode.Celsius) ? "1" : "2";
+            _txtMinus = (Prefs.TemperatureMode == TemperatureDisplayMode.Celsius) ? "-1°C" : "-2°F";
+            _txtPlus = (Prefs.TemperatureMode == TemperatureDisplayMode.Celsius) ? "1°C" : "2°F";
 
             _txtMinTempMinus = "MinTempMinus".Translate();
             _txtMinTempPlus = "MinTempPlus".Translate();
@@ -97,6 +97,9 @@ namespace GCRD
         public override void TickRare()
         {
             base.TickRare();
+
+            _txtMinus = (Prefs.TemperatureMode == TemperatureDisplayMode.Celsius) ? "-1°C" : "-2°F";
+            _txtPlus = (Prefs.TemperatureMode == TemperatureDisplayMode.Celsius) ? "1°C" : "2°F";
 
             _room = RoomQuery.RoomAt(Position);
 

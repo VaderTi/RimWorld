@@ -85,6 +85,7 @@ namespace GCRD
 
             _numHostiles = Find.ListerPawns.PawnsHostileToColony.Count();
             Alert = (_numHostiles > 0) ? AlertStatus.Intruders : AlertStatus.Normal;
+            Log.Message("Status: " + ((Alert > 0) ? "Invaders" : "Normal"));
         }
 
         public override void Destroy(DestroyMode mode = DestroyMode.Vanish)
