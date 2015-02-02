@@ -98,7 +98,6 @@ namespace GCRD
                             _glower.props.glowColor = _alertNormal;
                             break;
                     }
-                    Log.Message("Alert Status: " + );
                 }
                 else
                 {
@@ -114,7 +113,7 @@ namespace GCRD
 
                 if (!pawns.Any() && !_isAlert)
                 {
-                    if (_isDelayCounter && _delayCounter > 120)
+                    if (_isDelayCounter && _delayCounter >= 120)
                     {
                         _powerTrader.powerOutput = -1.0f;
                         _glower.Lit = false;

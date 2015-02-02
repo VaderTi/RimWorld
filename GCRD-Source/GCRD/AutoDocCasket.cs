@@ -81,6 +81,7 @@ namespace GCRD
                     orderby x.damageAmount descending
                     select x)
                 {
+                    
                     injury.isTreated = true;
                     injury.treatmentQuality = 1.0f;
                     injury.treatedWithMedicine = true;
@@ -88,10 +89,7 @@ namespace GCRD
 
                 foreach (var immunity in healthTracker.bodyModel.immunities)
                 {
-                    if (immunity.immunity < 1.0f)
-                    {
-                        immunity.immunity = 0.95f;
-                    }
+                    immunity.immunity = 1.0f;
                 }
             }
 
