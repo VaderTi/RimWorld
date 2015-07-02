@@ -8,13 +8,18 @@ namespace GCRD
     {
         private ClimateControl _indoorUnit;
 
-        public override void DrawGhost(ThingDef def, IntVec3 center, IntRot rot)
+        public override void DrawGhost(ThingDef def, IntVec3 center, Rot4 rot)
         {
+            var climatecontrols = Find.ListerBuildings.AllBuildingsColonistOfClass<ClimateControl>();
+
+            foreach (var unit in climatecontrols)
+            {
+                if (unit.Position != center) continue;
+                _indoorUnit = unit;
+                break;
+            }
             var room = RoomQuery.RoomAt(center);
-
             if (room == null || room.UsesOutdoorTemperature) return;
-
-            _indoorUnit = room.ContainedThingsOfType<ClimateControl>().FirstOrDefault();
 
             if (_indoorUnit == null) return;
             var status = _indoorUnit.WorkStatus;

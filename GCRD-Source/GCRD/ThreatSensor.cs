@@ -18,8 +18,8 @@ namespace GCRD
         private int _numHostiles;
         private CompPowerTrader _powerTrader;
         public AlertStatus Alert;
-        private List<SmartLamp> lamps;
-        private List<SmartTurret> turrets;
+        private List<SmartLamp> _lamps;
+        private List<SmartTurret> _turrets;
 
         public override void SpawnSetup()
         {
@@ -28,8 +28,8 @@ namespace GCRD
             Alert = AlertStatus.Normal;
 
             _powerTrader = GetComp<CompPowerTrader>();
-            turrets = new List<SmartTurret>();
-            lamps = new List<SmartLamp>();
+            _turrets = new List<SmartTurret>();
+            _lamps = new List<SmartLamp>();
         }
 
         public override void DeSpawn()
@@ -52,26 +52,26 @@ namespace GCRD
         {
             if (turret == null) return;
             turret.Sensor = this;
-            turrets.Add(turret);
+            _turrets.Add(turret);
         }
 
         public void RegisterLamp(SmartLamp lamp)
         {
             if (lamp == null) return;
             lamp.Sensor = this;
-            lamps.Add(lamp);
+            _lamps.Add(lamp);
         }
 
         private void UnregisterAll()
         {
-            if (turrets.Count > 0)
+            if (_turrets.Count > 0)
             {
-                turrets.ForEach(t => t.Sensor = null);
+                _turrets.ForEach(t => t.Sensor = null);
             }
 
-            if (lamps.Count > 0)
+            if (_lamps.Count > 0)
             {
-                lamps.ForEach(l => l.Sensor = null);
+                _lamps.ForEach(l => l.Sensor = null);
             }
         }
 

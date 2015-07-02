@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using RimWorld;
@@ -36,9 +37,8 @@ namespace GCRD
             _txtTsConnected = "TSConnected".Translate();
             _txtTsDisconnected = "TSDisconnected".Translate();
 
-            _basePowerConsumption = powerComp.powerOutput;
-
-            _range = gun.PrimaryVerb.verbProps.range;
+            _basePowerConsumption = powerComp.PowerOutput;
+            _range = GunCompEq.PrimaryVerb.verbProps.range;
 
             Sensor = null;
             _isConnectedToThreatSensor = false;
@@ -63,22 +63,23 @@ namespace GCRD
                     switch (Sensor.Alert)
                     {
                         case AlertStatus.Normal:
-                            powerComp.powerOutput = -10.0f;
-                            gun.PrimaryVerb.verbProps.range = def.specialDisplayRadius = 10.0f/PowerConsumptionPerTile;
+                            powerComp.PowerOutput = -10.0f;
+                            GunCompEq.PrimaryVerb.verbProps.range =
+                                def.specialDisplayRadius = 10.0f/PowerConsumptionPerTile;
 
                             break;
 
                         case AlertStatus.Intruders:
-                            powerComp.powerOutput = _basePowerConsumption;
-                            gun.PrimaryVerb.verbProps.range = def.specialDisplayRadius = _range;
+                            powerComp.PowerOutput = _basePowerConsumption;
+                            GunCompEq.PrimaryVerb.verbProps.range = def.specialDisplayRadius = _range;
                             break;
                     }
                 }
                 else
                 {
                     _isConnectedToThreatSensor = false;
-                    powerComp.powerOutput = _basePowerConsumption;
-                    gun.PrimaryVerb.verbProps.range = def.specialDisplayRadius = _range;
+                    powerComp.PowerOutput = _basePowerConsumption;
+                    GunCompEq.PrimaryVerb.verbProps.range = def.specialDisplayRadius = _range;
                 }
             }
 
@@ -94,16 +95,15 @@ namespace GCRD
 
         private void TryConnectToThreatSensor()
         {
-            var sensor = Find.ListerBuildings.AllBuildingsColonistOfClass<ThreatSensor>();
-            if (!sensor.Any()) return;
+            var sensors = Find.ListerBuildings.AllBuildingsColonistOfClass<ThreatSensor>();
 
-            sensor.FirstOrDefault().RegisterTurret(this);
+            var threatSensors = sensors as IList<ThreatSensor> ?? sensors.ToList();
+            if (!threatSensors.Any()) return;
+
+            var first = threatSensors.FirstOrDefault();
+            if (first == null) throw new ArgumentNullException(nameof(first));
+            first.RegisterTurret(this);
             _isConnectedToThreatSensor = true;
-        }
-
-        public override IEnumerable<Command> GetCommands()
-        {
-            return base.GetCommands();
         }
 
         public override string GetInspectString()
@@ -115,7 +115,7 @@ namespace GCRD
             if (powerComp.PowerNet.hasPowerSource)
             {
                 var pcrs = (int) (powerComp.PowerNet.CurrentEnergyGainRate()/CompPower.WattsToWattDaysPerTick);
-                stringBuilder.AppendLine(_txtPowerNeeded + ": " + -powerComp.powerOutput + " " + _txtWatt);
+                stringBuilder.AppendLine(_txtPowerNeeded + ": " + -powerComp.PowerOutput + " " + _txtWatt);
                 stringBuilder.AppendLine(string.Format(_txtPowerConnectedRateStored, pcrs,
                     powerComp.PowerNet.CurrentStoredEnergy().ToString("F0")));
                 if (_isThreatSensorLoaded)

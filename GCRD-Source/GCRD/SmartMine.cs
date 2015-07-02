@@ -45,11 +45,6 @@ namespace GCRD
             }
         }
 
-        public override void DeSpawn()
-        {
-            base.DeSpawn();
-        }
-
         private void Detonate()
         {
             var damageInfo = new BodyPartDamageInfo(null, BodyPartDepth.Outside);
@@ -57,8 +52,8 @@ namespace GCRD
 
             explosionInfo.center = Position;
             explosionInfo.radius = _explosive.props.explosiveRadius;
-            explosionInfo.dinfo = new DamageInfo(_explosive.props.explosiveDamageType, 30, this, damageInfo, null);
-            explosionInfo.Explode();
+            explosionInfo.dinfo = new DamageInfo(_explosive.props.explosiveDamageType, 30, this, part: damageInfo);
+            explosionInfo.DoExplosion();
         }
     }
 }

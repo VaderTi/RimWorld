@@ -47,10 +47,10 @@ namespace GCRD
 
         private static void GetTextures()
         {
-            _txUiMinTempMinus = ContentFinder<Texture2D>.Get("UI/Commands/UI_MinMinus", true);
-            _txUiMinTempPlus = ContentFinder<Texture2D>.Get("UI/Commands/UI_MinPlus", true);
-            _txUiMaxTempMinus = ContentFinder<Texture2D>.Get("UI/Commands/UI_MaxMinus", true);
-            _txUiMaxTempPlus = ContentFinder<Texture2D>.Get("UI/Commands/UI_MaxPlus", true);
+            _txUiMinTempMinus = ContentFinder<Texture2D>.Get("UI/Commands/UI_MinMinus");
+            _txUiMinTempPlus = ContentFinder<Texture2D>.Get("UI/Commands/UI_MinPlus");
+            _txUiMaxTempMinus = ContentFinder<Texture2D>.Get("UI/Commands/UI_MaxMinus");
+            _txUiMaxTempPlus = ContentFinder<Texture2D>.Get("UI/Commands/UI_MaxPlus");
         }
 
         public override void SpawnSetup()
@@ -105,8 +105,8 @@ namespace GCRD
 
             if (!_powerTrader.PowerOn || _room == null || _room.UsesOutdoorTemperature)
             {
-                if (_room.UsesOutdoorTemperature) WorkStatus = Status.Outdoor;
-                _powerTrader.powerOutput = 0;
+                if (_room != null && _room.UsesOutdoorTemperature) WorkStatus = Status.Outdoor;
+                _powerTrader.PowerOutput = 0;
                 return;
             }
 
@@ -115,14 +115,12 @@ namespace GCRD
             if (currentTemp >= _minComfortTemp && currentTemp <= _maxComfortTemp)
             {
                 WorkStatus = Status.Waiting;
-                _powerTrader.powerOutput = -1.0f;
+                _powerTrader.PowerOutput = -1.0f;
                 return;
             }
 
-            var needPower = 0.0f;
             var diffTemp = 0.0f;
             var powerMod = 1.1f;
-            var efficiencyLoss = 0.0f;
             var energyMul = 1.0f;
 
             if (currentTemp < _minComfortTemp)
@@ -140,11 +138,11 @@ namespace GCRD
 
             if (Mathf.Abs(diffTemp) < 3) energyMul += 0.5f;
 
-            efficiencyLoss = EfficiencyLossPerDegreeDifference*Mathf.Abs(diffTemp);
+            var efficiencyLoss = EfficiencyLossPerDegreeDifference*Mathf.Abs(diffTemp);
             var enegyLimit = diffTemp*_room.CellCount*energyMul*0.3333f;
-            needPower = Mathf.Abs(enegyLimit*(powerMod + efficiencyLoss));
+            var needPower = Mathf.Abs(enegyLimit*(powerMod + efficiencyLoss));
 
-            _powerTrader.powerOutput = -needPower;
+            _powerTrader.PowerOutput = -needPower;
             ChangeTemp(enegyLimit);
         }
 
@@ -175,11 +173,11 @@ namespace GCRD
             ++_maxComfortTemp;
         }
 
-        public override IEnumerable<Command> GetCommands()
+        public override IEnumerable<Gizmo> GetGizmos()
         {
-            var commandList = new List<Command>();
-            var baseCommandList = _powerTrader.CompGetCommandsExtra();
-            commandList = baseCommandList.ToList();
+            var list = new List<Gizmo>();
+            var commands = base.GetGizmos();
+            list.AsEnumerable().Concat(commands);
 
             var actionMinTempMinus = new Command_Action();
             actionMinTempMinus.icon = _txUiMinTempMinus;
@@ -187,7 +185,7 @@ namespace GCRD
             actionMinTempMinus.defaultDesc = _txtMinTempMinus;
             actionMinTempMinus.activateSound = SoundDef.Named("Click");
             actionMinTempMinus.action = MinTempMinus;
-            commandList.Add(actionMinTempMinus);
+            list.Add(actionMinTempMinus);
 
 
             var actionMinTempPlus = new Command_Action();
@@ -196,7 +194,7 @@ namespace GCRD
             actionMinTempPlus.defaultDesc = _txtMinTempPlus;
             actionMinTempPlus.activateSound = SoundDef.Named("Click");
             actionMinTempPlus.action = MinTempPlus;
-            commandList.Add(actionMinTempPlus);
+            list.Add(actionMinTempPlus);
 
 
             var actionMaxTempMinus = new Command_Action();
@@ -205,7 +203,7 @@ namespace GCRD
             actionMaxTempMinus.defaultDesc = _txtMaxTempMinus;
             actionMaxTempMinus.activateSound = SoundDef.Named("Click");
             actionMaxTempMinus.action = MaxTempMinus;
-            commandList.Add(actionMaxTempMinus);
+            list.Add(actionMaxTempMinus);
 
 
             var actionMaxTempPlus = new Command_Action();
@@ -214,9 +212,9 @@ namespace GCRD
             actionMaxTempPlus.defaultDesc = _txtMaxTempPlus;
             actionMaxTempPlus.activateSound = SoundDef.Named("Click");
             actionMaxTempPlus.action = MaxTempPlus;
-            commandList.Add(actionMaxTempPlus);
+            list.Add(actionMaxTempPlus);
 
-            return commandList.AsEnumerable();
+            return list.AsEnumerable();
         }
 
         public override string GetInspectString()
@@ -241,7 +239,7 @@ namespace GCRD
                 }
                 var pcrs = (int) (_powerTrader.PowerNet.CurrentEnergyGainRate()/CompPower.WattsToWattDaysPerTick);
                 stringBuilder.AppendLine(_txtStatus + ": " + statusstring);
-                stringBuilder.AppendLine(_txtPowerNeeded + ": " + -(int) _powerTrader.powerOutput + " " + _txtWatt);
+                stringBuilder.AppendLine(_txtPowerNeeded + ": " + -(int) _powerTrader.PowerOutput + " " + _txtWatt);
                 stringBuilder.AppendLine(_txtMinComfortTemp + ": " + _minComfortTemp.ToStringTemperature("F0"));
                 stringBuilder.AppendLine(_txtMaxComfortTemp + ": " + _maxComfortTemp.ToStringTemperature("F0"));
                 stringBuilder.AppendLine(string.Format(_txtPowerConnectedRateStored, pcrs,

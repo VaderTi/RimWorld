@@ -51,7 +51,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AutoDocCasket.cs" />
     <Compile Include="SmartLamp.cs" />
     <Compile Include="ClimateControl.cs" />
     <Compile Include="PlaceWorker_ClimateControl.cs" />

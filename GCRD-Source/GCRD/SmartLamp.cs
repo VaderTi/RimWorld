@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using RimWorld;
 using Verse;
@@ -7,6 +9,8 @@ namespace GCRD
 {
     public class SmartLamp : Building
     {
+        private readonly ColorInt _alertIntruders = new ColorInt(222, 0, 0);
+        private readonly ColorInt _alertWarning = new ColorInt(210, 210, 0);
         private ColorInt _alertNormal;
         private int _counter;
         private int _delayCounter;
@@ -26,8 +30,6 @@ namespace GCRD
         private string _txtTsDisconnected = "Не найден";
         private string _txtWatt = "Вт";
         public ThreatSensor Sensor;
-        private readonly ColorInt _alertIntruders = new ColorInt(222, 0, 0);
-        private readonly ColorInt _alertWarning = new ColorInt(210, 210, 0);
 
         public override void SpawnSetup()
         {
@@ -44,7 +46,7 @@ namespace GCRD
             _txtTsDisconnected = "TSDisconnected".Translate();
 
             _powerTrader = GetComp<CompPowerTrader>();
-            _maxPowerСonsumption = _powerTrader.powerOutput;
+            _maxPowerСonsumption = _powerTrader.PowerOutput;
             _glower = GetComp<CompGlower>();
             _alertNormal = _glower.props.glowColor;
             _room = RoomQuery.RoomAt(Position);
@@ -115,7 +117,7 @@ namespace GCRD
                 {
                     if (_isDelayCounter && _delayCounter >= 120)
                     {
-                        _powerTrader.powerOutput = -1.0f;
+                        _powerTrader.PowerOutput = -1.0f;
                         _glower.Lit = false;
                         _delayCounter = 0;
                     }
@@ -123,7 +125,7 @@ namespace GCRD
                 }
                 else
                 {
-                    _powerTrader.powerOutput = _maxPowerСonsumption;
+                    _powerTrader.PowerOutput = _maxPowerСonsumption;
                     _glower.Lit = true;
                     _delayCounter = 0;
                     _isDelayCounter = false;
@@ -141,10 +143,14 @@ namespace GCRD
 
         private void TryConnectToThreatSensor()
         {
-            var sensor = Find.ListerBuildings.AllBuildingsColonistOfClass<ThreatSensor>();
-            if (!sensor.Any()) return;
+            var sensors = Find.ListerBuildings.AllBuildingsColonistOfClass<ThreatSensor>();
 
-            sensor.FirstOrDefault().RegisterLamp(this);
+            var threatSensors = sensors as IList<ThreatSensor> ?? sensors.ToList();
+            if (!threatSensors.Any()) return;
+
+            var first = threatSensors.FirstOrDefault();
+            if (first == null) throw new ArgumentNullException(nameof(first));
+            first.RegisterLamp(this);
             _isConnectedToThreatSensor = true;
         }
 
@@ -157,7 +163,7 @@ namespace GCRD
             if (_powerTrader.PowerNet.hasPowerSource)
             {
                 var pcrs = (int) (_powerTrader.PowerNet.CurrentEnergyGainRate()/CompPower.WattsToWattDaysPerTick);
-                stringBuilder.AppendLine(_txtPowerNeeded + ": " + -_powerTrader.powerOutput + " " + _txtWatt);
+                stringBuilder.AppendLine(_txtPowerNeeded + ": " + -_powerTrader.PowerOutput + " " + _txtWatt);
                 stringBuilder.AppendLine(string.Format(_txtPowerConnectedRateStored, pcrs,
                     _powerTrader.PowerNet.CurrentStoredEnergy().ToString("F0")));
                 if (_isThreatSensorLoaded)

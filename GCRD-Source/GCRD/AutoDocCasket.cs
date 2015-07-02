@@ -27,7 +27,7 @@ namespace GCRD
             _txtPowerConnectedRateStored = "PowerConnectedRateStored".Translate();
 
             _powerTrader = GetComp<CompPowerTrader>();
-            _maxPowerConsumption = _powerTrader.powerOutput;
+            _maxPowerConsumption = _powerTrader.PowerOutput;
             _idlePowerConsumption = _maxPowerConsumption/10.0f;
         }
 
@@ -37,14 +37,14 @@ namespace GCRD
 
             if (!_powerTrader.PowerOn)
             {
-                _powerTrader.powerOutput = 0.0f;
+                _powerTrader.PowerOutput = 0.0f;
                 EjectContents();
                 return;
             }
 
             if (container.Empty)
             {
-                _powerTrader.powerOutput = _idlePowerConsumption;
+                _powerTrader.PowerOutput = _idlePowerConsumption;
                 return;
             }
 
@@ -54,7 +54,7 @@ namespace GCRD
             if (_counter < 2500) return;
             _counter = 1;
 
-            _powerTrader.powerOutput = _maxPowerConsumption;
+            _powerTrader.PowerOutput = _maxPowerConsumption;
 
             var patients = new List<Pawn>();
             // Получаем содержимое крипто контейнера и заносим в список
@@ -67,6 +67,7 @@ namespace GCRD
             // Работаем с каждым пациентом отдельно
             foreach (var patient in patients)
             {
+                patient.
                 var healthTracker = patient.healthTracker;
 
                 // Если здоров, выпускаем из капсулы
@@ -97,9 +98,9 @@ namespace GCRD
             _counter = 0;
         }
 
-        public override IEnumerable<Command> GetCommands()
+        public override IEnumerable<Gizmo> GetGizmos()
         {
-            return _powerTrader.CompGetCommandsExtra();
+            return base.GetGizmos();
         }
 
         public override string GetInspectString()
@@ -111,7 +112,7 @@ namespace GCRD
             if (_powerTrader.PowerNet.hasPowerSource)
             {
                 var pcrs = (int)_powerTrader.PowerNet.CurrentEnergyGainRate()/CompPower.WattsToWattDaysPerTick;
-                stringBuilder.AppendLine(_txtPowerNeeded + ": " + -_powerTrader.powerOutput + " " + _txtWatt);
+                stringBuilder.AppendLine(_txtPowerNeeded + ": " + -_powerTrader.PowerOutput + " " + _txtWatt);
                 stringBuilder.AppendLine(string.Format(_txtPowerConnectedRateStored, pcrs,
                     _powerTrader.PowerNet.CurrentStoredEnergy().ToString("F0")));
             }
