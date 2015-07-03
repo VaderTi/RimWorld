@@ -12,12 +12,18 @@
 
 	<ThingDef ParentName="BuildingBase">
 		<defName>ClimateControl</defName>
-		<eType>Building_TempController</eType>
 		<thingClass>GCRD.ClimateControl</thingClass>
 		<label>Климат контроль</label>
 		<description>Система климат контроля. Устанавливает минимальную и максимальную комфортную температуру и удерживает ее.</description>
-		<graphicPath>Things/ClimateControl/ClimateControl</graphicPath>
-		<graphicClass>Graphic_Single</graphicClass>
+		<graphicData>
+			<texPath>Things/ClimateControl/ClimateControl</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<shadowInfo>
+				<basewidth>0.5</basewidth>
+				<baseHeight>0.5</baseHeight>
+				<tallness>1.0</tallness>
+			</shadowInfo>
+		</graphicData>
 		<altitudeLayer>BuildingTall</altitudeLayer>
 		<passability>PassThroughOnly</passability>
 		<castEdgeShadows>false</castEdgeShadows>
@@ -25,7 +31,7 @@
 		<fillPercent>1</fillPercent>
 		<statBases>
 			<WorkToMake>1000</WorkToMake>
-			<MaxHealth>100</MaxHealth>
+			<MaxHitPoints>100</MaxHitPoints>
 			<Flammability>1.0</Flammability>
 		</statBases>
 		<tickerType>Rare</tickerType>
@@ -33,12 +39,6 @@
 		<costList>
 			<Steel>100</Steel>
 		</costList>
-		<killedLeavings>
-			<ChunkSlag>1</ChunkSlag>
-		</killedLeavings>
-		<filthLeavings>
-			<SlagRubble>3</SlagRubble>
-		</filthLeavings>
 		<leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
 		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
 		<placeWorkers>
@@ -52,11 +52,6 @@
 			</li>
 		</comps>
 		<designationCategory>Temperature</designationCategory>
-		<sunShadowInfo>
-			<basewidth>0.5</basewidth>
-			<baseHeight>0.5</baseHeight>
-			<tallness>1.0</tallness>
-		</sunShadowInfo>
 	</ThingDef>
 
 </Buildings>
