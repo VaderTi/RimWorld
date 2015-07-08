@@ -31,8 +31,8 @@
 		<fillPercent>1</fillPercent>
 		<statBases>
 			<WorkToMake>1000</WorkToMake>
-			<MaxHitPoints>100</MaxHitPoints>
 			<Flammability>1.0</Flammability>
+			<MaxHitPoints>100</MaxHitPoints>
 		</statBases>
 		<tickerType>Rare</tickerType>
 		<size>(1,1)</size>

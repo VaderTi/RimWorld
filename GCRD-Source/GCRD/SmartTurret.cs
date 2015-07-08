@@ -19,7 +19,7 @@ namespace GCRD
         private string _txtPowerNeeded = "Потребляемая мощность";
         private string _txtPowerNotConnected = "Не подключено к сети.";
         private string _txtThreatSensor = "Детектор угроз";
-        private string _txtTsConnected = "Соеденен";
+        private string _txtTsConnected = "Соединён";
         private string _txtTsDisconnected = "Не найден";
         private string _txtWatt = "Вт";
         public ThreatSensor Sensor;

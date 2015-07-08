@@ -12,15 +12,21 @@
 
 	<ThingDef ParentName="BuildingBase">
 		<defName>ThreatSensor</defName>
-		<eType>BuildingComplex</eType>
 		<thingClass>GCRD.ThreatSensor</thingClass>
 		<label>Детектор угроз</label>
 		<description>Детектор угроз сканирует окружающее пространство в поисках угроз. Если установлены умные лампы или туррели управляет их поведением.</description>
-		<graphicPath>Things/Building/ThreatSensor</graphicPath>
-		<graphicClass>Graphic_Single</graphicClass>
+		<graphicData>
+			<texPath>Things/Building/ThreatSensor</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<shadowInfo>
+				<basewidth>0.3</basewidth>
+				<baseHeight>0.3</baseHeight>
+				<tallness>0.6</tallness>
+			</shadowInfo>
+		</graphicData>
 		<altitudeLayer>Waist</altitudeLayer>
 		<statBases>
-			<MaxHealth>100</MaxHealth>
+			<MaxHitPoints>100</MaxHitPoints>
 			<WorkToMake>1000</WorkToMake>
 			<Flammability>0.5</Flammability>
 		</statBases>
@@ -30,9 +36,6 @@
 		<costList>
 			<Steel>100</Steel>
 		</costList>
-		<filthLeavings>
-			<SlagRubble>1</SlagRubble>
-		</filthLeavings>
 		<comps>
 			<li>
 			<compClass>CompPowerTrader</compClass>
@@ -42,11 +45,6 @@
 			</li>
 		</comps>
 		<designationCategory>Misc</designationCategory>
-		<sunShadowInfo>
-			<basewidth>0.3</basewidth>
-			<baseHeight>0.3</baseHeight>
-			<tallness>0.6</tallness>
-		</sunShadowInfo>
 		<rotatable>false</rotatable>
 		<placeWorkers>
 			<li>PlaceWorker_NotUnderRoof</li>

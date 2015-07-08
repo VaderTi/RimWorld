@@ -11,29 +11,35 @@
 	</ThingDef>
 
 	<ThingDef ParentName="BuildingBase">
-		<eType>BuildingComplex</eType>
-		<thingClass>GCRD.SmartLamp</thingClass>
 		<defName>SmartLamp</defName>
+		<thingClass>GCRD.SmartLamp</thingClass>
 		<label>Умная лампа</label>
 		<description>Умная лампа на светодиодах. Также имеет встроенный датчик движения что позволяет экономить энергию когда комната пуста.</description>
-		<graphicPath>Things/Building/Furniture/LampStanding</graphicPath>
-		<graphicClass>Graphic_Single</graphicClass>
-		<altitudeLayer>BuildingTall</altitudeLayer>
+		<graphicData>
+			<texPath>Things/Building/Furniture/LampStanding</texPath>
+			<graphicClass>Graphic_Single</graphicClass>
+			<shadowInfo>
+				<basewidth>0.3</basewidth>
+				<baseHeight>0.3</baseHeight>
+				<tallness>0.6</tallness>
+				<offset>(0,0,-0.1)</offset>
+			</shadowInfo>
+		</graphicData>
+		<altitudeLayer>Waist</altitudeLayer>
 		<passability>PassThroughOnly</passability>
 		<rotatable>false</rotatable>
+		<selectable>true</selectable>
 		<statBases>
-			<MaxHealth>50</MaxHealth>
 			<WorkToMake>115</WorkToMake>
 			<Flammability>1.0</Flammability>
+			<MaxHitPoints>50</MaxHitPoints>
 		</statBases>
-		<selectable>true</selectable>
-		<size>(1,1)</size>
 		<tickerType>Normal</tickerType>
 		<costList>
 			<Steel>15</Steel>
 		</costList>
-		<soundImpactDefault>BulletImpactMetal</soundImpactDefault>
 		<leaveResourcesWhenKilled>false</leaveResourcesWhenKilled>
+		<soundImpactDefault>BulletImpactMetal</soundImpactDefault>
 		<comps>
 			<li>
 				<compClass>CompPowerTrader</compClass>
@@ -49,12 +55,6 @@
 			</li>
 		</comps>
 		<designationCategory>Furniture</designationCategory>
-		<sunShadowInfo>
-			<basewidth>0.3</basewidth>
-			<baseHeight>0.3</baseHeight>
-			<tallness>0.6</tallness>
-			<offset>(0,0,-0.1)</offset>
-		</sunShadowInfo>
 	</ThingDef>
 
 </Buildings>
