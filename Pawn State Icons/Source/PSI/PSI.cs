@@ -22,7 +22,7 @@ namespace PSI
         public static Settings Settings = new Settings();
         private static readonly Color TargetColor = new Color(1f, 1f, 1f, 0.6f);
         private static float _worldScale = 1f;
-        public static string[] IconSets = new string[1] {"default"};
+        public static string[] IconSets = {"default"};
         public static Materials Materials = new Materials();
         private static PawnCapacityDef[] _pawnCapacities;
         private static Vector3[] _iconPosVectors;
@@ -63,7 +63,7 @@ namespace PSI
             RecalcIconPositions();
         }
 
-        public static Settings LoadSettings(string path = "psi-settings.cfg")
+        private static Settings LoadSettings(string path = "psi-settings.cfg")
         {
             var fromXmlFile = XmlLoader.ItemFromXmlFile<Settings>(path);
             var path1 = GenFilePaths.CoreModsFolderPath + "/PSI/Textures/UI/Overlays/PawnStateIcons/";
@@ -79,16 +79,16 @@ namespace PSI
             XmlSaver.SaveDataObject(Settings, path);
         }
 
-        private void DrawIcon(Vector3 bodyPos, Vector3 posOffset, Icons icon, Color c)
+        private static void DrawIcon(Vector3 bodyPos, Vector3 posOffset, Icons icon, Color color)
         {
             var material = Materials[icon];
             if (material == null)
                 return;
             LongEventHandler.ExecuteWhenFinished(() =>
             {
-                material.color = c;
-                var color = GUI.color;
-                GUI.color = c;
+                material.color = color;
+                var guiColor = GUI.color;
+                GUI.color = color;
                 Vector2 vector2;
                 if (Settings.IconsScreenScale)
                 {
@@ -106,32 +106,32 @@ namespace PSI
                 position.x -= position.width * 0.5f;
                 position.y -= position.height * 0.5f;
                 GUI.DrawTexture(position, material.mainTexture, ScaleMode.ScaleToFit, true);
-                GUI.color = color;
+                GUI.color = guiColor;
             });
         }
 
-        private void DrawIcon(Vector3 bodyPos, int num, Icons icon, Color c)
+        private static void DrawIcon(Vector3 bodyPos, int num, Icons icon, Color color)
         {
-            DrawIcon(bodyPos, _iconPosVectors[num], icon, c);
+            DrawIcon(bodyPos, _iconPosVectors[num], icon, color);
         }
 
-        private void DrawIcon(Vector3 bodyPos, int num, Icons icon, float v)
+        private static void DrawIcon(Vector3 bodyPos, int num, Icons icon, float v)
         {
             DrawIcon(bodyPos, num, icon, new Color(1f, v, v));
         }
 
-        private void DrawIcon(Vector3 bodyPos, int num, Icons icon, float v, Color c1, Color c2)
+        private static void DrawIcon(Vector3 bodyPos, int num, Icons icon, float v, Color c1, Color c2)
         {
             DrawIcon(bodyPos, num, icon, Color.Lerp(c1, c2, v));
         }
 
-        private void DrawIcon(Vector3 bodyPos, int num, Icons icon, float v, Color c1, Color c2, Color c3)
+        private static void DrawIcon(Vector3 bodyPos, int num, Icons icon, float v, Color c1, Color c2, Color c3)
         {
             DrawIcon(bodyPos, num, icon,
                 v < 0.5 ? Color.Lerp(c1, c2, v*2f) : Color.Lerp(c2, c3, (float) ((v - 0.5)*2.0)));
         }
 
-        public static void RecalcIconPositions()
+        private static void RecalcIconPositions()
         {
             _iconPosVectors = new Vector3[18];
             for (var index = 0; index < _iconPosVectors.Length; ++index)
@@ -148,7 +148,7 @@ namespace PSI
             }
         }
 
-        public void UpdateColonistStats(Pawn colonist)
+        private static void UpdateColonistStats(Pawn colonist)
         {
             if (!_statsDict.ContainsKey(colonist))
                 _statsDict.Add(colonist, new PawnStats());
@@ -165,15 +165,15 @@ namespace PSI
                         continue;
                 }
             }
-            var val1 = 10f;
+            var efficiency = 10f;
             foreach (var activity in _pawnCapacities)
             {
                 if (activity != PawnCapacityDefOf.Consciousness)
-                    val1 = Math.Min(val1, colonist.health.capacities.GetEfficiency(activity));
+                    efficiency = Math.Min(efficiency, colonist.health.capacities.GetEfficiency(activity));
             }
-            if (val1 < 0.0)
-                val1 = 0.0f;
-            pawnStats.TotalEfficiency = val1;
+            if (efficiency < 0.0)
+                efficiency = 0.0f;
+            pawnStats.TotalEfficiency = efficiency;
             pawnStats.TargetPos = Vector3.zero;
             if (colonist.jobs.curJob != null)
             {
@@ -190,7 +190,7 @@ namespace PSI
                     else if (jobDriverDoBill.workLeft <= 0.00999999977648258)
                         targetInfo = job.targetB;
                 }
-                if (jobDriver is JobDriver_Hunt && colonist.carrier != null && colonist.carrier.CarriedThing != null)
+                if (jobDriver is JobDriver_Hunt && colonist.carrier?.CarriedThing != null)
                     targetInfo = job.targetB;
                 if (job.def == JobDefOf.Wait)
                     targetInfo = null;
@@ -240,6 +240,7 @@ namespace PSI
             _statsDict[colonist] = pawnStats;
         }
 
+        // ReSharper disable once UnusedMember.Global
         public virtual void FixedUpdate()
         {
             _fDelta += Time.fixedDeltaTime;
@@ -262,7 +263,7 @@ namespace PSI
             }
         }
 
-        public void UpdateOptionsDialog()
+        private static void UpdateOptionsDialog()
         {
             var dialogOptions = Find.WindowStack.WindowOfType<Dialog_Options>();
             var flag1 = dialogOptions != null;
@@ -294,7 +295,7 @@ namespace PSI
             }
         }
 
-        public void DrawAnimalIcons(Pawn animal)
+        private static void DrawAnimalIcons(Pawn animal)
         {
             if (animal.Dead || animal.holder != null)
                 return;
@@ -305,7 +306,7 @@ namespace PSI
             DrawIcon(bodyPos, 0, Icons.Aggressive, Color.red);
         }
 
-        public void DrawColonistIcons(Pawn colonist)
+        private static void DrawColonistIcons(Pawn colonist)
         {
             var num1 = 0;
             PawnStats pawnStats;
