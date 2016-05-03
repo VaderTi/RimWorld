@@ -3,55 +3,59 @@
 
 	<ThingDef Name="BuildingBase" Abstract="True">
 		<category>Building</category>
+		<thingClass>Building</thingClass>
 		<soundImpactDefault>BulletImpactMetal</soundImpactDefault>
 		<selectable>true</selectable>
 		<drawerType>MapMeshAndRealTime</drawerType>
 		<terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
 		<repairEffect>Repair</repairEffect>
+		<leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
+		<filthLeaving>BuildingRubble</filthLeaving>
 	</ThingDef>
 
 	<ThingDef ParentName="BuildingBase">
+		<thingClass>ClimateControl.Building_ClimateControl</thingClass>
 		<defName>ClimateControl</defName>
-		<thingClass>GCRD.ClimateControl</thingClass>
+		<designationCategory>Temperature</designationCategory>
 		<label>Климат контроль</label>
-		<description>Система климат контроля. Устанавливает минимальную и максимальную комфортную температуру и удерживает ее.</description>
+		<description>Система климат контроля.</description>
 		<graphicData>
-			<texPath>Things/ClimateControl/ClimateControl</texPath>
+			<texPath>Things/Building/ClimateControl</texPath>
 			<graphicClass>Graphic_Single</graphicClass>
-			<shadowInfo>
-				<basewidth>0.5</basewidth>
-				<baseHeight>0.5</baseHeight>
-				<tallness>1.0</tallness>
-			</shadowInfo>
+			<shadowData>
+				<volume>(0.25,0.4,0.7)</volume>
+				<offset>(0,0,-0.1)</offset>
+			</shadowData>
 		</graphicData>
 		<altitudeLayer>BuildingTall</altitudeLayer>
 		<passability>PassThroughOnly</passability>
-		<castEdgeShadows>false</castEdgeShadows>
+		<pathCost>40</pathCost>
 		<rotatable>false</rotatable>
-		<fillPercent>1</fillPercent>
+		<fillPercent>0.4</fillPercent>
 		<statBases>
 			<WorkToMake>1000</WorkToMake>
-			<Flammability>1.0</Flammability>
 			<MaxHitPoints>100</MaxHitPoints>
+			<Flammability>0.2</Flammability>
 		</statBases>
 		<tickerType>Rare</tickerType>
-		<size>(1,1)</size>
 		<costList>
 			<Steel>100</Steel>
+			<Components>5</Components>
 		</costList>
-		<leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
 		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
-		<placeWorkers>
-			<li>GCRD.PlaceWorker_ClimateControl</li>
-		</placeWorkers>
 		<drawPlaceWorkersWhileSelected>true</drawPlaceWorkersWhileSelected>
+		<placeWorkers>
+			<li>ClimateControl.PlaceWorker_ClimateControl</li>
+		</placeWorkers>
 		<comps>
-			<li>
+			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
-				<startElectricalFires>true</startElectricalFires>
+				<startElectricalFires>false</startElectricalFires>
 			</li>
+			<li Class="CompProperties_Flickable"/>
+			<li Class="CompProperties_TempControl"/>
+			<li Class="CompProperties_Breakdownable"/>
 		</comps>
-		<designationCategory>Temperature</designationCategory>
 	</ThingDef>
 
 </Buildings>

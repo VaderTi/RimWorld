@@ -6,7 +6,7 @@
 	<MaxTempPlus>Increase maximal comfort temperature</MaxTempPlus>
 	
 	<Status>Status</Status>
-	<StatusWaiting>Waiting</StatusWaiting>
+	<StatusWaiting>Idle</StatusWaiting>
 	<StatusHeating>Heating</StatusHeating>
 	<StatusCooling>Cooling</StatusCooling>
 	<StatusOutdoor>Installed outside</StatusOutdoor>
