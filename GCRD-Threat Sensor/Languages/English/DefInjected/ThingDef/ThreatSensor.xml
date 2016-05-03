@@ -1,5 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<LanguageData>
-	<ThreatSensor.label>Threat sensor</ThreatSensor.label>
-	<ThreatSensor.description>Threat Detector scans the surrounding area in search of threats. If you have installed smart lamp or turrets to control their behavior.</ThreatSensor.description>
-</LanguageData>
