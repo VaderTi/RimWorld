@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Linq;
 using UnityEngine;
 using Verse;
@@ -8,29 +7,24 @@ namespace PSI
 {
     internal class Materials
     {
-        private Material[] data = new Material[21];
-        public readonly string matLibName;
+        // ReSharper disable once FieldCanBeMadeReadOnly.Local
+        private Material[] _data = new Material[21];
+        private readonly string _matLibName;
 
-        public Material this[Icons icon]
-        {
-            get
-            {
-                return data[(int)icon];
-            }
-        }
+        public Material this[Icons icon] => _data[(int)icon];
 
         public Materials(string matLib = "default")
         {
-            matLibName = matLib;
+            _matLibName = matLib;
         }
 
-        public Material loadIconMat(string path, bool smooth = false)
+        private Material LoadIconMat(string path, bool smooth = false)
         {
             var tex = ContentFinder<Texture2D>.Get("UI/Overlays/PawnStateIcons/" + path, false);
             Material material;
-            if ((UnityEngine.Object)tex == (UnityEngine.Object)null)
+            if (tex == null)
             {
-                material = (Material)null;
+                material = null;
             }
             else
             {
@@ -55,9 +49,9 @@ namespace PSI
             return material;
         }
 
-        public void reloadTextures(bool smooth = false)
+        public void ReloadTextures(bool smooth = false)
         {
-            foreach (var icons in ((IEnumerable)Enum.GetValues(typeof(Icons))).Cast<Icons>())
+            foreach (var icons in Enum.GetValues(typeof(Icons)).Cast<Icons>())
             {
                 switch (icons)
                 {
@@ -65,8 +59,8 @@ namespace PSI
                     case Icons.Length:
                         continue;
                     default:
-                        var path = matLibName + "/" + Enum.GetName(typeof(Icons), (object)icons);
-                        data[(int)icons] = loadIconMat(path, smooth);
+                        var path = _matLibName + "/" + Enum.GetName(typeof(Icons), icons);
+                        _data[(int)icons] = LoadIconMat(path, smooth);
                         continue;
                 }
             }
