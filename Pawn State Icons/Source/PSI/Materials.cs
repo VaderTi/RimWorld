@@ -28,7 +28,9 @@ namespace PSI
         Drunk,
         ApparelHealth,
         Pacific,
-        NeedsBionics,
+        LacksBionics,
+        NightOwl,
+        Greedy,
         Length
     }
 

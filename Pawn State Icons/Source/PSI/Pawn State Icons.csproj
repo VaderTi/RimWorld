@@ -54,7 +54,7 @@
     <Compile Include="Initializer.cs" />
     <Compile Include="InitializerBehavior.cs" />
     <Compile Include="PSI.cs" />
-    <Compile Include="Settings.cs" />
+    <Compile Include="ModSettings.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

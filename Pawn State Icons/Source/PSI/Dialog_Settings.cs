@@ -155,6 +155,9 @@ namespace PSI
             listing.DoLabelCheckbox("PSI.Settings.Visibility.Tired".Translate(), ref PSI.settings.show_Tired);
             listing.DoLabelCheckbox("PSI.Settings.Visibility.Disease".Translate(), ref PSI.settings.show_Disease);
             listing.DoLabelCheckbox("PSI.Settings.Visibility.Bionics".Translate(), ref PSI.settings.show_Bionics);
+            listing.DoLabelCheckbox("PSI.Settings.Visibility.NightOwl".Translate(), ref PSI.settings.show_NightOwl);
+            listing.DoLabelCheckbox("PSI.Settings.Visibility.Greedy".Translate(), ref PSI.settings.show_Greedy);
+
             listing.OverrideColumnWidth = 230f;
             if (listing.DoTextButton("PSI.Settings.ReturnButton".Translate()))
                 Page = "main";

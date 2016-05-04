@@ -174,7 +174,7 @@ namespace PSI
             var pawnStats = _statsDict[colonist];
 
             pawnStats.pawn_isNudist = false;
-            pawnStats.pawn_lacksBionic = false;
+            pawnStats.pawn_lacksBionics = false;
 
             foreach (var trait in colonist.story.traits.allTraits)
             {
@@ -183,8 +183,14 @@ namespace PSI
                     case "Nudist":
                         pawnStats.pawn_isNudist = true;
                         continue;
-                    case "LacksBionic":
-                        pawnStats.pawn_lacksBionic = true;
+                    case "Prosthophile":
+                        pawnStats.pawn_lacksBionics = true;
+                        continue;
+                    case "NightOwl":
+                        pawnStats.pawn_isNightOwl = true;
+                        continue;
+                    case "Greedy":
+                        pawnStats.pawn_isGreedy = true;
                         continue;
                     default:
                         continue;
@@ -425,9 +431,14 @@ namespace PSI
             if (settings.show_Disease && pawnStats.pawn_hasSickThought && pawnStats.DiseaseDisappearance < settings.limit_DiseaseLess)
                 DrawIcon(drawPos, num1++, Icons.Disease, pawnStats.DiseaseDisappearance / settings.limit_DiseaseLess);
 
-            if (settings.show_Bionics && pawnStats.pawn_lacksBionic)
-                DrawIcon(drawPos, num1++, Icons.NeedsBionics, pawnStats.DiseaseDisappearance / settings.limit_DiseaseLess);
+            if (settings.show_Bionics && pawnStats.pawn_lacksBionics)
+                DrawIcon(drawPos, num1++, Icons.LacksBionics, Color.white);
 
+            if (settings.show_NightOwl && pawnStats.pawn_isNightOwl)
+                DrawIcon(drawPos, num1++, Icons.NightOwl, Color.white);
+
+            if (settings.show_Greedy && pawnStats.pawn_isGreedy)
+                DrawIcon(drawPos, num1++, Icons.Greedy, Color.white);
 
             if (settings.show_Bloodloss && pawnStats.pawn_BleedRate > 0.0f)
                 DrawIcon(drawPos, num1++, Icons.Bloodloss, new Color(1f, 0.0f, 0.0f, pawnStats.pawn_BleedRate));

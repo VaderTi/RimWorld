@@ -6,7 +6,9 @@ namespace PSI
     {
         public bool pawn_hasSickThought = false;
         public bool pawn_isNudist = false;
-        public bool pawn_lacksBionic = false;
+        public bool pawn_lacksBionics = false;
+        public bool pawn_isNightOwl = false;
+        public bool pawn_isGreedy = false;
 
         public float pawn_TotalEfficiency = 1f;
         public float pawn_TooCold = -1f;

@@ -34,6 +34,8 @@
         public bool show_ApparelHealth = true;
         public bool show_Pacific = true;
         public bool show_Bionics = true;
+        public bool show_NightOwl = true;
+        public bool show_Greedy = true;
 
         public float limit_MoodLess = 0.25f;
         public float limit_FoodLess = 0.25f;
