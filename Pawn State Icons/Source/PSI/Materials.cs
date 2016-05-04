@@ -7,7 +7,7 @@ namespace PSI
 {
     public enum Icons
     {
-        None = 0,
+        None,
         Aggressive,
         Bloodloss,
         Dazed,
@@ -28,6 +28,7 @@ namespace PSI
         Drunk,
         ApparelHealth,
         Pacific,
+        NeedsBionics,
         Length
     }
 

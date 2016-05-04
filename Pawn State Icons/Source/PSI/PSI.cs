@@ -12,20 +12,31 @@ namespace PSI
     // ReSharper disable once InconsistentNaming
     internal class PSI : MonoBehaviour
     {
-        private static double _fDelta;
-        private static bool _inGame;
+        private static double fDelta;
+
+        private static bool inGame;
+
         // ReSharper disable once FieldCanBeMadeReadOnly.Local
         private static Dictionary<Pawn, PawnStats> _statsDict = new Dictionary<Pawn, PawnStats>();
+
         private static bool _iconsEnabled = true;
+
         // ReSharper disable once FieldCanBeMadeReadOnly.Local
-        private static Dialog_Settings _settingsDialog = new Dialog_Settings();
-        public static Settings settings = new Settings();
+        private static Dialog_Settings modSettingsDialog = new Dialog_Settings();
+
+        public static ModSettings settings = new ModSettings();
+
         private static readonly Color targetColor = new Color(1f, 1f, 1f, 0.6f);
-        private static float _worldScale = 1f;
-        public static string[] IconSets = { "default" };
+
+        private static float worldScale = 1f;
+
+        public static string[] iconSets = { "default" };
+
         public static Materials materials = new Materials();
-        private static PawnCapacityDef[] _pawnCapacities;
-        private static Vector3[] _iconPosVectors;
+
+        private static PawnCapacityDef[] pawnCapacities;
+
+        private static Vector3[] iconPosVectors;
 
         public PSI()
         {
@@ -34,7 +45,7 @@ namespace PSI
 
         public static void Reinit(bool reloadSettings = true, bool reloadIconSet = true, bool recalcIconPos = true)
         {
-            _pawnCapacities = new[]
+            PSI.pawnCapacities = new PawnCapacityDef[]
             {
                 PawnCapacityDefOf.BloodFiltration,
                 PawnCapacityDefOf.BloodPumping,
@@ -50,35 +61,40 @@ namespace PSI
             };
 
             if (reloadSettings)
-                settings = LoadSettings();
-
+            {
+                PSI.settings = PSI.loadSettings("psi-settings.cfg");
+            }
             if (reloadIconSet)
-                LongEventHandler.ExecuteWhenFinished(() =>
-                {
-                    materials = new Materials(settings.icon_Set);
-                    var fromXmlFile = XmlLoader.ItemFromXmlFile<Settings>(GenFilePaths.CoreModsFolderPath + "/PSI/Textures/UI/Overlays/PawnStateIcons/" + settings.icon_Set + "/iconset.cfg");
-                    settings.icon_SizeMult = fromXmlFile.icon_SizeMult;
-                    materials.ReloadTextures(true);
-                });
-            if (!recalcIconPos)
-                return;
-            RecalcIconPositions();
+            {
+                PSI.materials = new Materials(PSI.settings.iconSet);
+                ModSettings modSettings = XmlLoader.ItemFromXmlFile<ModSettings>(GenFilePaths.CoreModsFolderPath + "/Pawn State Icons/Textures/UI/Overlays/PawnStateIcons/" + PSI.settings.iconSet + "/iconset.cfg", true);
+                PSI.settings.iconSizeMult = modSettings.iconSizeMult;
+                PSI.materials.ReloadTextures(true);
+            }
+            if (recalcIconPos)
+            {
+                PSI.RecalcIconPositions();
+            }
         }
 
-        private static Settings LoadSettings(string path = "psi-settings.cfg")
+        public static ModSettings loadSettings(string path = "psi-settings.cfg")
         {
-            var fromXmlFile = XmlLoader.ItemFromXmlFile<Settings>(path);
-            var path1 = GenFilePaths.CoreModsFolderPath + "/PSI/Textures/UI/Overlays/PawnStateIcons/";
-            if (!Directory.Exists(path1)) return fromXmlFile;
-            IconSets = Directory.GetDirectories(path1);
-            for (var index = 0; index < IconSets.Length; ++index)
-                IconSets[index] = new DirectoryInfo(IconSets[index]).Name;
-            return fromXmlFile;
+            ModSettings result = XmlLoader.ItemFromXmlFile<ModSettings>(path, true);
+            string path2 = GenFilePaths.CoreModsFolderPath + "/Pawn State Icons/Textures/UI/Overlays/PawnStateIcons/";
+            if (Directory.Exists(path2))
+            {
+                PSI.iconSets = Directory.GetDirectories(path2);
+                for (int i = 0; i < PSI.iconSets.Length; i++)
+                {
+                    PSI.iconSets[i] = new DirectoryInfo(PSI.iconSets[i]).Name;
+                }
+            }
+            return result;
         }
 
         public static void SaveSettings(string path = "psi-settings.cfg")
         {
-            XmlSaver.SaveDataObject(settings, path);
+            XmlSaver.SaveDataObject(PSI.settings, path);
         }
 
         private static void DrawIcon(Vector3 bodyPos, Vector3 posOffset, Icons icon, Color color)
@@ -92,7 +108,7 @@ namespace PSI
                 var guiColor = GUI.color;
                 GUI.color = color;
                 Vector2 vector2;
-                if (settings.icons_ScreenScale)
+                if (settings.iconsScreenScale)
                 {
                     vector2 = bodyPos.ToScreenPosition();
                     vector2.x += posOffset.x * 45f;
@@ -100,11 +116,11 @@ namespace PSI
                 }
                 else
                     vector2 = (bodyPos + posOffset).ToScreenPosition();
-                var num1 = _worldScale;
-                if (settings.icons_ScreenScale)
+                var num1 = worldScale;
+                if (settings.iconsScreenScale)
                     num1 = 45f;
-                var num2 = num1 * (settings.icon_SizeMult * 0.5f);
-                var position = new Rect(vector2.x, vector2.y, num2 * settings.icon_Size, num2 * settings.icon_Size);
+                var num2 = num1 * (settings.iconSizeMult * 0.5f);
+                var position = new Rect(vector2.x, vector2.y, num2 * settings.iconSize, num2 * settings.iconSize);
                 position.x -= position.width * 0.5f;
                 position.y -= position.height * 0.5f;
                 GUI.DrawTexture(position, material.mainTexture, ScaleMode.ScaleToFit, true);
@@ -114,7 +130,7 @@ namespace PSI
 
         private static void DrawIcon(Vector3 bodyPos, int num, Icons icon, Color color)
         {
-            DrawIcon(bodyPos, _iconPosVectors[num], icon, color);
+            DrawIcon(bodyPos, iconPosVectors[num], icon, color);
         }
 
         private static void DrawIcon(Vector3 bodyPos, int num, Icons icon, float v)
@@ -135,18 +151,18 @@ namespace PSI
 
         private static void RecalcIconPositions()
         {
-            _iconPosVectors = new Vector3[18];
-            for (var index = 0; index < _iconPosVectors.Length; ++index)
+            iconPosVectors = new Vector3[18];
+            for (var index = 0; index < iconPosVectors.Length; ++index)
             {
-                var num1 = index / settings.icons_InColumn;
-                var num2 = index % settings.icons_InColumn;
-                if (settings.icons_Horizontal)
+                var num1 = index / settings.iconsInColumn;
+                var num2 = index % settings.iconsInColumn;
+                if (settings.iconsHorizontal)
                 {
                     var num3 = num1;
                     num1 = num2;
                     num2 = num3;
                 }
-                _iconPosVectors[index] = new Vector3((float)(-0.600000023841858 * settings.icon_DistanceX - 0.550000011920929 * settings.icon_Size * settings.icon_OffsetX * num1), 3f, (float)(-0.600000023841858 * settings.icon_DistanceY + 0.550000011920929 * settings.icon_Size * settings.icon_OffsetY * num2));
+                iconPosVectors[index] = new Vector3((float)(-0.600000023841858 * settings.iconDistanceX - 0.550000011920929 * settings.iconSize * settings.iconOffsetX * num1), 3f, (float)(-0.600000023841858 * settings.iconDistanceY + 0.550000011920929 * settings.iconSize * settings.iconOffsetY * num2));
             }
         }
 
@@ -154,8 +170,12 @@ namespace PSI
         {
             if (!_statsDict.ContainsKey(colonist))
                 _statsDict.Add(colonist, new PawnStats());
+
             var pawnStats = _statsDict[colonist];
+
             pawnStats.pawn_isNudist = false;
+            pawnStats.pawn_lacksBionic = false;
+
             foreach (var trait in colonist.story.traits.allTraits)
             {
                 switch (trait.def.defName)
@@ -163,20 +183,27 @@ namespace PSI
                     case "Nudist":
                         pawnStats.pawn_isNudist = true;
                         continue;
+                    case "LacksBionic":
+                        pawnStats.pawn_lacksBionic = true;
+                        continue;
                     default:
                         continue;
                 }
             }
+
             var efficiency = 10f;
-            foreach (var activity in _pawnCapacities)
+
+            foreach (var activity in pawnCapacities)
             {
                 if (activity != PawnCapacityDefOf.Consciousness)
                     efficiency = Math.Min(efficiency, colonist.health.capacities.GetEfficiency(activity));
             }
+
             if (efficiency < 0.0)
                 efficiency = 0.0f;
             pawnStats.pawn_TotalEfficiency = efficiency;
             pawnStats.TargetPos = Vector3.zero;
+
             if (colonist.jobs.curJob != null)
             {
                 var jobDriver = colonist.jobs.curDriver;
@@ -239,20 +266,27 @@ namespace PSI
             }
             pawnStats.pawn_ApparelHealth = num1;
             pawnStats.pawn_BleedRate = Mathf.Clamp01(colonist.health.hediffSet.BleedingRate * settings.limit_BleedMult);
-            if (colonist.health.HasHediffsNeedingTend())
-                pawnStats.pawn_hasDisease = true;
+
+            //if (colonist.health.HasHediffsNeedingTend())
+            //    pawnStats.pawn_hasDisease = true;
+
+            if (colonist.health.hediffSet.AnyHediffMakesSickThought)
+                pawnStats.pawn_hasSickThought = true;
+
+            //       if (colonist.story.traits.allTraits.Contains)
+
             _statsDict[colonist] = pawnStats;
         }
 
         // ReSharper disable once UnusedMember.Global
         public virtual void FixedUpdate()
         {
-            _fDelta += Time.fixedDeltaTime;
-            if (_fDelta < 0.1)
+            fDelta += Time.fixedDeltaTime;
+            if (fDelta < 0.1)
                 return;
-            _fDelta = 0.0;
-            _inGame = GameObject.Find("CameraMap");
-            if (!_inGame || !_iconsEnabled)
+            fDelta = 0.0;
+            inGame = GameObject.Find("CameraMap");
+            if (!inGame || !_iconsEnabled)
                 return;
             foreach (var colonist in Find.Map.mapPawns.FreeColonistsAndPrisoners)
             {
@@ -274,28 +308,28 @@ namespace PSI
             var flag2 = Find.WindowStack.IsOpen(typeof(Dialog_Settings));
             if (flag1 && flag2)
             {
-                _settingsDialog.OptionsDialog = dialogOptions;
+                modSettingsDialog.OptionsDialog = dialogOptions;
                 RecalcIconPositions();
             }
             else if (flag1 && !flag2)
             {
-                if (!_settingsDialog.CloseButtonClicked)
+                if (!modSettingsDialog.CloseButtonClicked)
                 {
-                    Find.UIRoot.windows.Add(_settingsDialog);
-                    _settingsDialog.Page = "main";
+                    Find.UIRoot.windows.Add(modSettingsDialog);
+                    modSettingsDialog.Page = "main";
                 }
                 else
                     dialogOptions.Close();
             }
             else if (!flag1 && flag2)
             {
-                _settingsDialog.Close(false);
+                modSettingsDialog.Close(false);
             }
             else
             {
                 if (flag1 || flag2)
                     return;
-                _settingsDialog.CloseButtonClicked = false;
+                modSettingsDialog.CloseButtonClicked = false;
             }
         }
 
@@ -316,7 +350,9 @@ namespace PSI
             PawnStats pawnStats;
             if (colonist.Dead || colonist.holder != null || (!_statsDict.TryGetValue(colonist, out pawnStats) || colonist.drafter == null) || colonist.skills == null)
                 return;
+
             var drawPos = colonist.DrawPos;
+
             if (colonist.skills.GetSkill(SkillDefOf.Melee).TotallyDisabled && colonist.skills.GetSkill(SkillDefOf.Shooting).TotallyDisabled)
             {
                 if (settings.show_Pacific)
@@ -362,6 +398,7 @@ namespace PSI
                 else
                     DrawIcon(drawPos, num1++, Icons.Hot, pawnStats.pawn_TooHot - 1f, new Color(1f, 0.7f, 0.0f, 1f), Color.red);
             }
+
             if (settings.show_Aggressive && colonist.MentalStateDef == MentalStateDefOf.Berserk)
                 DrawIcon(drawPos, num1++, Icons.Aggressive, Color.red);
 
@@ -381,11 +418,16 @@ namespace PSI
                 else if (pawnStats.pawn_Drunkness > 0.05)
                     DrawIcon(drawPos, num1++, Icons.Drunk, pawnStats.pawn_Drunkness, new Color(1f, 1f, 1f, 0.2f), Color.white, new Color(1f, 0.1f, 0.0f));
             }
+
             if (settings.show_Effectiveness && pawnStats.pawn_TotalEfficiency < (double)settings.limit_EfficiencyLess)
                 DrawIcon(drawPos, num1++, Icons.Effectiveness, pawnStats.pawn_TotalEfficiency / settings.limit_EfficiencyLess);
 
-            if (settings.show_Disease && pawnStats.pawn_hasDisease && pawnStats.DiseaseDisappearance < settings.limit_DiseaseLess)
+            if (settings.show_Disease && pawnStats.pawn_hasSickThought && pawnStats.DiseaseDisappearance < settings.limit_DiseaseLess)
                 DrawIcon(drawPos, num1++, Icons.Disease, pawnStats.DiseaseDisappearance / settings.limit_DiseaseLess);
+
+            if (settings.show_Bionics && pawnStats.pawn_lacksBionic)
+                DrawIcon(drawPos, num1++, Icons.NeedsBionics, pawnStats.DiseaseDisappearance / settings.limit_DiseaseLess);
+
 
             if (settings.show_Bloodloss && pawnStats.pawn_BleedRate > 0.0f)
                 DrawIcon(drawPos, num1++, Icons.Bloodloss, new Color(1f, 0.0f, 0.0f, pawnStats.pawn_BleedRate));
@@ -397,8 +439,10 @@ namespace PSI
                 var num6 = pawnStats.pawn_ApparelHealth / (double)settings.limit_ApparelHealthLess;
                 DrawIcon(bodyPos, num2, Icons.ApparelHealth, (float)num6);
             }
+
             if (!settings.show_TargetPoint || !(pawnStats.TargetPos != Vector3.zero))
                 return;
+
             DrawIcon(pawnStats.TargetPos, Vector3.zero, Icons.Target, targetColor);
         }
 
@@ -406,9 +450,9 @@ namespace PSI
         // ReSharper disable once UnusedMember.Global
         public virtual void OnGUI()
         {
-            if (!_inGame || Find.TickManager.Paused)
+            if (!inGame || Find.TickManager.Paused)
                 UpdateOptionsDialog();
-            if (!_iconsEnabled || !_inGame)
+            if (!_iconsEnabled || !inGame)
                 return;
             foreach (var pawn in Find.Map.mapPawns.AllPawns)
             {
@@ -423,7 +467,7 @@ namespace PSI
         // ReSharper disable once UnusedMember.Global
         public virtual void Update()
         {
-            if (!_inGame)
+            if (!inGame)
                 return;
             if (Input.GetKeyUp(KeyCode.F11))
             {
@@ -431,7 +475,7 @@ namespace PSI
                 Messages.Message(_iconsEnabled ? "PSI.Enabled".Translate() : "PSI.Disabled".Translate(),
                     MessageSound.Standard);
             }
-            _worldScale = Screen.height / (2f * Camera.current.orthographicSize);
+            worldScale = Screen.height / (2f * Camera.current.orthographicSize);
         }
     }
 }

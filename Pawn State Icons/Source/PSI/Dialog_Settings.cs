@@ -31,15 +31,15 @@ namespace PSI
 
         private void FillPageMain(Listing_Standard listing)
         {
-            if (listing.DoTextButton("PSI.Settings.IconSet".Translate() + PSI.settings.icon_Set))
+            if (listing.DoTextButton("PSI.Settings.IconSet".Translate() + PSI.settings.iconSet))
             {
                 var options = new List<FloatMenuOption>();
-                foreach (var str in PSI.IconSets)
+                foreach (var str in PSI.iconSets)
                 {
                     var setname = str;
                     options.Add(new FloatMenuOption(setname, () =>
                     {
-                        PSI.settings.icon_Set = setname;
+                        PSI.settings.iconSet = setname;
                         PSI.materials = new Materials(setname);
                         PSI.materials.ReloadTextures(true);
                     }));
@@ -60,7 +60,7 @@ namespace PSI
                     {
                         try
                         {
-                            PSI.settings = XmlLoader.ItemFromXmlFile<Settings>(setname);
+                            PSI.settings = XmlLoader.ItemFromXmlFile<ModSettings>(setname);
                             PSI.SaveSettings();
                             PSI.Reinit();
                         }
@@ -100,7 +100,7 @@ namespace PSI
                     {
                         try
                         {
-                            var settings = XmlLoader.ItemFromXmlFile<Settings>(setname);
+                            var settings = XmlLoader.ItemFromXmlFile<ModSettings>(setname);
                             PSI.settings.limit_BleedMult = settings.limit_BleedMult;
                             PSI.settings.limit_DiseaseLess = settings.limit_DiseaseLess;
                             PSI.settings.limit_EfficiencyLess = settings.limit_EfficiencyLess;
@@ -154,6 +154,7 @@ namespace PSI
             listing.DoLabelCheckbox("PSI.Settings.Visibility.Sad".Translate(), ref PSI.settings.show_Sad);
             listing.DoLabelCheckbox("PSI.Settings.Visibility.Tired".Translate(), ref PSI.settings.show_Tired);
             listing.DoLabelCheckbox("PSI.Settings.Visibility.Disease".Translate(), ref PSI.settings.show_Disease);
+            listing.DoLabelCheckbox("PSI.Settings.Visibility.Bionics".Translate(), ref PSI.settings.show_Bionics);
             listing.OverrideColumnWidth = 230f;
             if (listing.DoTextButton("PSI.Settings.ReturnButton".Translate()))
                 Page = "main";
@@ -188,15 +189,15 @@ namespace PSI
                     {
                         try
                         {
-                            var settings = XmlLoader.ItemFromXmlFile<Settings>(setname);
-                            PSI.settings.icon_DistanceX = settings.icon_DistanceX;
-                            PSI.settings.icon_DistanceY = settings.icon_DistanceY;
-                            PSI.settings.icon_OffsetX = settings.icon_OffsetX;
-                            PSI.settings.icon_OffsetY = settings.icon_OffsetY;
-                            PSI.settings.icons_Horizontal = settings.icons_Horizontal;
-                            PSI.settings.icons_ScreenScale = settings.icons_ScreenScale;
-                            PSI.settings.icons_InColumn = settings.icons_InColumn;
-                            PSI.settings.icon_Size = settings.icon_Size;
+                            var settings = XmlLoader.ItemFromXmlFile<ModSettings>(setname);
+                            PSI.settings.iconDistanceX = settings.iconDistanceX;
+                            PSI.settings.iconDistanceY = settings.iconDistanceY;
+                            PSI.settings.iconOffsetX = settings.iconOffsetX;
+                            PSI.settings.iconOffsetY = settings.iconOffsetY;
+                            PSI.settings.iconsHorizontal = settings.iconsHorizontal;
+                            PSI.settings.iconsScreenScale = settings.iconsScreenScale;
+                            PSI.settings.iconsInColumn = settings.iconsInColumn;
+                            PSI.settings.iconSize = settings.iconSize;
                         }
                         catch (IOException)
                         {
@@ -206,23 +207,23 @@ namespace PSI
                 }
                 Find.WindowStack.Add(new FloatMenu(options));
             }
-            var num = (int)(PSI.settings.icon_Size * 4.5);
+            var num = (int)(PSI.settings.iconSize * 4.5);
             if (num > 8)
                 num = 8;
             else if (num < 0)
                 num = 0;
             listing.DoLabel("PSI.Settings.Arrangement.IconSize".Translate() + ("PSI.Settings.SizeLabel." + num).Translate());
-            PSI.settings.icon_Size = listing.DoSlider(PSI.settings.icon_Size, 0.5f, 2f);
-            listing.DoLabel(string.Concat("PSI.Settings.Arrangement.IconPosition".Translate(), (int) (PSI.settings.icon_DistanceX * 100.0), " , ", (int) (PSI.settings.icon_DistanceY * 100.0)));
-            PSI.settings.icon_DistanceX = listing.DoSlider(PSI.settings.icon_DistanceX, -2f, 2f);
-            PSI.settings.icon_DistanceY = listing.DoSlider(PSI.settings.icon_DistanceY, -2f, 2f);
-            listing.DoLabel(string.Concat("PSI.Settings.Arrangement.IconOffset".Translate(), (int) (PSI.settings.icon_OffsetX * 100.0), " , ", (int) (PSI.settings.icon_OffsetY * 100.0)));
-            PSI.settings.icon_OffsetX = listing.DoSlider(PSI.settings.icon_OffsetX, -2f, 2f);
-            PSI.settings.icon_OffsetY = listing.DoSlider(PSI.settings.icon_OffsetY, -2f, 2f);
-            listing.DoLabelCheckbox("PSI.Settings.Arrangement.Horizontal".Translate(), ref PSI.settings.icons_Horizontal);
-            listing.DoLabelCheckbox("PSI.Settings.Arrangement.ScreenScale".Translate(), ref PSI.settings.icons_ScreenScale);
-            listing.DoLabel("PSI.Settings.Arrangement.IconsPerColumn".Translate() + PSI.settings.icons_InColumn);
-            PSI.settings.icons_InColumn = (int)listing.DoSlider(PSI.settings.icons_InColumn, 1f, 9f);
+            PSI.settings.iconSize = listing.DoSlider(PSI.settings.iconSize, 0.5f, 2f);
+            listing.DoLabel(string.Concat("PSI.Settings.Arrangement.IconPosition".Translate(), (int) (PSI.settings.iconDistanceX * 100.0), " , ", (int) (PSI.settings.iconDistanceY * 100.0)));
+            PSI.settings.iconDistanceX = listing.DoSlider(PSI.settings.iconDistanceX, -2f, 2f);
+            PSI.settings.iconDistanceY = listing.DoSlider(PSI.settings.iconDistanceY, -2f, 2f);
+            listing.DoLabel(string.Concat("PSI.Settings.Arrangement.IconOffset".Translate(), (int) (PSI.settings.iconOffsetX * 100.0), " , ", (int) (PSI.settings.iconOffsetY * 100.0)));
+            PSI.settings.iconOffsetX = listing.DoSlider(PSI.settings.iconOffsetX, -2f, 2f);
+            PSI.settings.iconOffsetY = listing.DoSlider(PSI.settings.iconOffsetY, -2f, 2f);
+            listing.DoLabelCheckbox("PSI.Settings.Arrangement.Horizontal".Translate(), ref PSI.settings.iconsHorizontal);
+            listing.DoLabelCheckbox("PSI.Settings.Arrangement.ScreenScale".Translate(), ref PSI.settings.iconsScreenScale);
+            listing.DoLabel("PSI.Settings.Arrangement.IconsPerColumn".Translate() + PSI.settings.iconsInColumn);
+            PSI.settings.iconsInColumn = (int)listing.DoSlider(PSI.settings.iconsInColumn, 1f, 9f);
             if (!listing.DoTextButton("PSI.Settings.ReturnButton".Translate()))
                 return;
             Page = "main";

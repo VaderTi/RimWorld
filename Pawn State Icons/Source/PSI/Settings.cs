@@ -1,18 +1,18 @@
 ﻿namespace PSI
 {
-    internal class Settings
+    internal class ModSettings
     {
-        public float icon_Size = 1f;
-        public float icon_SizeMult = 1f;
-        public float icon_DistanceX = 1f;
-        public float icon_DistanceY = 1f;
-        public float icon_OffsetX = 1f;
-        public float icon_OffsetY = 1f;
+        public float iconSize = 1f;
+        public float iconSizeMult = 1f;
+        public float iconDistanceX = 1f;
+        public float iconDistanceY = 1f;
+        public float iconOffsetX = 1f;
+        public float iconOffsetY = 1f;
 
-        public int icons_InColumn = 3;
-        public bool icons_Horizontal;
-        public bool icons_ScreenScale = true;
-        public string icon_Set = "default";
+        public int iconsInColumn = 3;
+        public bool iconsHorizontal;
+        public bool iconsScreenScale = true;
+        public string iconSet = "default";
 
         public bool show_TargetPoint = true;
         public bool show_Aggressive = true;
@@ -33,6 +33,7 @@
         public bool show_Drunk = true;
         public bool show_ApparelHealth = true;
         public bool show_Pacific = true;
+        public bool show_Bionics = true;
 
         public float limit_MoodLess = 0.25f;
         public float limit_FoodLess = 0.25f;
