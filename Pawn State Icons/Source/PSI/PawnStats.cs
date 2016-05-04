@@ -4,6 +4,7 @@ namespace PSI
 {
     internal class PawnStats
     {
+        public bool hasDisease = false;
         public float TotalEfficiency = 1f;
         public float TooCold = -1f;
         public float TooHot = -1f;
