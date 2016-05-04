@@ -46,10 +46,12 @@ namespace PSI
                 PawnCapacityDefOf.Metabolism,
                 PawnCapacityDefOf.Moving,
                 PawnCapacityDefOf.Sight,
-                PawnCapacityDefOf.Talking
+                PawnCapacityDefOf.Talking,
             };
+
             if (reloadSettings)
                 settings = LoadSettings();
+
             if (reloadIconSet)
                 LongEventHandler.ExecuteWhenFinished(() =>
                 {
@@ -153,13 +155,13 @@ namespace PSI
             if (!_statsDict.ContainsKey(colonist))
                 _statsDict.Add(colonist, new PawnStats());
             var pawnStats = _statsDict[colonist];
-            pawnStats.IsNudist = false;
+            pawnStats.pawn_isNudist = false;
             foreach (var trait in colonist.story.traits.allTraits)
             {
                 switch (trait.def.defName)
                 {
                     case "Nudist":
-                        pawnStats.IsNudist = true;
+                        pawnStats.pawn_isNudist = true;
                         continue;
                     default:
                         continue;
@@ -173,7 +175,7 @@ namespace PSI
             }
             if (efficiency < 0.0)
                 efficiency = 0.0f;
-            pawnStats.TotalEfficiency = efficiency;
+            pawnStats.pawn_TotalEfficiency = efficiency;
             pawnStats.TargetPos = Vector3.zero;
             if (colonist.jobs.curJob != null)
             {
@@ -215,12 +217,12 @@ namespace PSI
                 }
             }
             var temperatureForCell = GenTemperature.GetTemperatureForCell(colonist.Position);
-            pawnStats.TooCold = (float)((colonist.ComfortableTemperatureRange().min - (double)settings.limit_TempComfortOffset - temperatureForCell) / 10.0);
-            pawnStats.TooHot = (float)((temperatureForCell - (double)colonist.ComfortableTemperatureRange().max - settings.limit_TempComfortOffset) / 10.0);
-            pawnStats.TooCold = Mathf.Clamp(pawnStats.TooCold, 0.0f, 2f);
-            pawnStats.TooHot = Mathf.Clamp(pawnStats.TooHot, 0.0f, 2f);
+            pawnStats.pawn_TooCold = (float)((colonist.ComfortableTemperatureRange().min - (double)settings.limit_TempComfortOffset - temperatureForCell) / 10.0);
+            pawnStats.pawn_TooHot = (float)((temperatureForCell - (double)colonist.ComfortableTemperatureRange().max - settings.limit_TempComfortOffset) / 10.0);
+            pawnStats.pawn_TooCold = Mathf.Clamp(pawnStats.pawn_TooCold, 0.0f, 2f);
+            pawnStats.pawn_TooHot = Mathf.Clamp(pawnStats.pawn_TooHot, 0.0f, 2f);
             pawnStats.DiseaseDisappearance = 1f;
-            pawnStats.Drunkness = DrugUtility.DrunknessPercent(colonist);
+            pawnStats.pawn_Drunkness = DrugUtility.DrunknessPercent(colonist);
             foreach (var hediff in colonist.health.hediffSet.hediffs)
             {
                 var hediffWithComps = (HediffWithComps)hediff;
@@ -235,10 +237,10 @@ namespace PSI
                 if (num2 >= 0.0 && num2 < (double)num1)
                     num1 = num2;
             }
-            pawnStats.ApparelHealth = num1;
-            pawnStats.BleedRate = Mathf.Clamp01(colonist.health.hediffSet.BleedingRate * settings.limit_BleedMult);
+            pawnStats.pawn_ApparelHealth = num1;
+            pawnStats.pawn_BleedRate = Mathf.Clamp01(colonist.health.hediffSet.BleedingRate * settings.limit_BleedMult);
             if (colonist.health.HasHediffsNeedingTend())
-                pawnStats.hasDisease = true;
+                pawnStats.pawn_hasDisease = true;
             _statsDict[colonist] = pawnStats;
         }
 
@@ -322,63 +324,77 @@ namespace PSI
             }
             else if (settings.show_Unarmed && colonist.equipment.Primary == null && !colonist.IsPrisonerOfColony)
                 DrawIcon(drawPos, num1++, Icons.Unarmed, Color.white);
+
             if (settings.show_Idle && colonist.mindState.IsIdle)
                 DrawIcon(drawPos, num1++, Icons.Idle, Color.white);
+
             if (settings.show_Draft && colonist.drafter.Drafted)
                 DrawIcon(drawPos, num1++, Icons.Draft, Color.white);
+
             if (settings.show_Sad && colonist.needs.mood.CurLevel < (double)settings.limit_MoodLess)
                 DrawIcon(drawPos, num1++, Icons.Sad, colonist.needs.mood.CurLevel / settings.limit_MoodLess);
+
             if (settings.show_Hungry && colonist.needs.food.CurLevel < (double)settings.limit_FoodLess)
                 DrawIcon(drawPos, num1++, Icons.Hungry, colonist.needs.food.CurLevel / settings.limit_FoodLess);
+
             if (settings.show_Tired && colonist.needs.rest.CurLevel < (double)settings.limit_RestLess)
                 DrawIcon(drawPos, num1++, Icons.Tired, colonist.needs.rest.CurLevel / settings.limit_RestLess);
-            if (settings.show_Naked && !pawnStats.IsNudist && colonist.apparel.PsychologicallyNude)
+
+            if (settings.show_Naked && !pawnStats.pawn_isNudist && colonist.apparel.PsychologicallyNude)
                 DrawIcon(drawPos, num1++, Icons.Naked, Color.white);
-            if (settings.show_Cold && pawnStats.TooCold > 0.0)
+
+            if (settings.show_Cold && pawnStats.pawn_TooCold > 0.0)
             {
-                if (pawnStats.TooCold >= 0.0)
+                if (pawnStats.pawn_TooCold >= 0.0)
                 {
-                    if (pawnStats.TooCold <= 1.0)
-                        DrawIcon(drawPos, num1++, Icons.Freezing, pawnStats.TooCold, new Color(1f, 1f, 1f, 0.3f), new Color(0.86f, 0.86f, 1f, 1f));
-                    else if (pawnStats.TooCold <= 1.5)
-                        DrawIcon(drawPos, num1++, Icons.Freezing, (float)((pawnStats.TooCold - 1.0) * 2.0), new Color(0.86f, 0.86f, 1f, 1f), new Color(1f, 0.86f, 0.86f));
+                    if (pawnStats.pawn_TooCold <= 1.0)
+                        DrawIcon(drawPos, num1++, Icons.Freezing, pawnStats.pawn_TooCold, new Color(1f, 1f, 1f, 0.3f), new Color(0.86f, 0.86f, 1f, 1f));
+                    else if (pawnStats.pawn_TooCold <= 1.5)
+                        DrawIcon(drawPos, num1++, Icons.Freezing, (float)((pawnStats.pawn_TooCold - 1.0) * 2.0), new Color(0.86f, 0.86f, 1f, 1f), new Color(1f, 0.86f, 0.86f));
                     else
-                        DrawIcon(drawPos, num1++, Icons.Freezing, (float)((pawnStats.TooCold - 1.5) * 2.0), new Color(1f, 0.86f, 0.86f), Color.red);
+                        DrawIcon(drawPos, num1++, Icons.Freezing, (float)((pawnStats.pawn_TooCold - 1.5) * 2.0), new Color(1f, 0.86f, 0.86f), Color.red);
                 }
             }
-            else if (settings.show_Hot && pawnStats.TooHot > 0.0 && pawnStats.TooCold >= 0.0)
+            else if (settings.show_Hot && pawnStats.pawn_TooHot > 0.0 && pawnStats.pawn_TooCold >= 0.0)
             {
-                if (pawnStats.TooHot <= 1.0)
-                    DrawIcon(drawPos, num1++, Icons.Hot, pawnStats.TooHot, new Color(1f, 1f, 1f, 0.3f), new Color(1f, 0.7f, 0.0f, 1f));
+                if (pawnStats.pawn_TooHot <= 1.0)
+                    DrawIcon(drawPos, num1++, Icons.Hot, pawnStats.pawn_TooHot, new Color(1f, 1f, 1f, 0.3f), new Color(1f, 0.7f, 0.0f, 1f));
                 else
-                    DrawIcon(drawPos, num1++, Icons.Hot, pawnStats.TooHot - 1f, new Color(1f, 0.7f, 0.0f, 1f), Color.red);
+                    DrawIcon(drawPos, num1++, Icons.Hot, pawnStats.pawn_TooHot - 1f, new Color(1f, 0.7f, 0.0f, 1f), Color.red);
             }
             if (settings.show_Aggressive && colonist.MentalStateDef == MentalStateDefOf.Berserk)
                 DrawIcon(drawPos, num1++, Icons.Aggressive, Color.red);
+
             if (settings.show_Leave && colonist.MentalStateDef == MentalStateDefOf.GiveUpExit)
                 DrawIcon(drawPos, num1++, Icons.Leave, Color.red);
+
             if (settings.show_Dazed && colonist.MentalStateDef == MentalStateDefOf.DazedWander)
                 DrawIcon(drawPos, num1++, Icons.Dazed, Color.red);
+
             if (colonist.MentalStateDef == MentalStateDefOf.PanicFlee)
                 DrawIcon(drawPos, num1++, Icons.Panic, Color.yellow);
+
             if (settings.show_Drunk)
             {
                 if (colonist.MentalStateDef == MentalStateDefOf.BingingAlcohol)
                     DrawIcon(drawPos, num1++, Icons.Drunk, Color.red);
-                else if (pawnStats.Drunkness > 0.05)
-                    DrawIcon(drawPos, num1++, Icons.Drunk, pawnStats.Drunkness, new Color(1f, 1f, 1f, 0.2f), Color.white, new Color(1f, 0.1f, 0.0f));
+                else if (pawnStats.pawn_Drunkness > 0.05)
+                    DrawIcon(drawPos, num1++, Icons.Drunk, pawnStats.pawn_Drunkness, new Color(1f, 1f, 1f, 0.2f), Color.white, new Color(1f, 0.1f, 0.0f));
             }
-            if (settings.show_Effectiveness && pawnStats.TotalEfficiency < (double)settings.limit_EfficiencyLess)
-                DrawIcon(drawPos, num1++, Icons.Effectiveness, pawnStats.TotalEfficiency / settings.limit_EfficiencyLess);
-            if (settings.show_Disease && pawnStats.hasDisease && pawnStats.DiseaseDisappearance < settings.limit_DiseaseLess)
+            if (settings.show_Effectiveness && pawnStats.pawn_TotalEfficiency < (double)settings.limit_EfficiencyLess)
+                DrawIcon(drawPos, num1++, Icons.Effectiveness, pawnStats.pawn_TotalEfficiency / settings.limit_EfficiencyLess);
+
+            if (settings.show_Disease && pawnStats.pawn_hasDisease && pawnStats.DiseaseDisappearance < settings.limit_DiseaseLess)
                 DrawIcon(drawPos, num1++, Icons.Disease, pawnStats.DiseaseDisappearance / settings.limit_DiseaseLess);
-            if (settings.show_Bloodloss && pawnStats.BleedRate > 0.0)
-                DrawIcon(drawPos, num1++, Icons.Bloodloss, new Color(1f, 0.0f, 0.0f, pawnStats.BleedRate));
-            if (settings.show_ApparelHealth && pawnStats.ApparelHealth < (double)settings.limit_ApparelHealthLess)
+
+            if (settings.show_Bloodloss && pawnStats.pawn_BleedRate > 0.0f)
+                DrawIcon(drawPos, num1++, Icons.Bloodloss, new Color(1f, 0.0f, 0.0f, pawnStats.pawn_BleedRate));
+
+            if (settings.show_ApparelHealth && pawnStats.pawn_ApparelHealth < (double)settings.limit_ApparelHealthLess)
             {
                 var bodyPos = drawPos;
                 var num2 = num1;
-                var num6 = pawnStats.ApparelHealth / (double)settings.limit_ApparelHealthLess;
+                var num6 = pawnStats.pawn_ApparelHealth / (double)settings.limit_ApparelHealthLess;
                 DrawIcon(bodyPos, num2, Icons.ApparelHealth, (float)num6);
             }
             if (!settings.show_TargetPoint || !(pawnStats.TargetPos != Vector3.zero))

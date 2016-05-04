@@ -5,6 +5,32 @@ using Verse;
 
 namespace PSI
 {
+    public enum Icons
+    {
+        None = 0,
+        Aggressive,
+        Bloodloss,
+        Dazed,
+        Disease,
+        Draft,
+        Effectiveness,
+        Freezing,
+        Hot,
+        Hungry,
+        Idle,
+        Leave,
+        Naked,
+        Panic,
+        Sad,
+        Target,
+        Tired,
+        Unarmed,
+        Drunk,
+        ApparelHealth,
+        Pacific,
+        Length
+    }
+
     internal class Materials
     {
         // ReSharper disable once FieldCanBeMadeReadOnly.Local

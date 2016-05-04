@@ -4,15 +4,16 @@ namespace PSI
 {
     internal class PawnStats
     {
-        public bool hasDisease = false;
-        public float TotalEfficiency = 1f;
-        public float TooCold = -1f;
-        public float TooHot = -1f;
-        public float BleedRate = -1f;
+        public bool pawn_hasDisease = false;
+        public bool pawn_isNudist;
+
+        public float pawn_TotalEfficiency = 1f;
+        public float pawn_TooCold = -1f;
+        public float pawn_TooHot = -1f;
+        public float pawn_BleedRate = -1f;
         public Vector3 TargetPos = Vector3.zero;
         public float DiseaseDisappearance = 1f;
-        public float ApparelHealth = 1f;
-        public bool IsNudist;
-        public float Drunkness;
+        public float pawn_ApparelHealth = 1f;
+        public float pawn_Drunkness;
     }
 }
