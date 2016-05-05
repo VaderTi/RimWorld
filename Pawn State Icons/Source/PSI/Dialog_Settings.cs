@@ -154,9 +154,12 @@ namespace PSI
             listing.DoLabelCheckbox("PSI.Settings.Visibility.Sad".Translate(), ref PSI.settings.show_Sad);
             listing.DoLabelCheckbox("PSI.Settings.Visibility.Tired".Translate(), ref PSI.settings.show_Tired);
             listing.DoLabelCheckbox("PSI.Settings.Visibility.Disease".Translate(), ref PSI.settings.show_Disease);
-            listing.DoLabelCheckbox("PSI.Settings.Visibility.Bionics".Translate(), ref PSI.settings.show_Bionics);
             listing.DoLabelCheckbox("PSI.Settings.Visibility.NightOwl".Translate(), ref PSI.settings.show_NightOwl);
             listing.DoLabelCheckbox("PSI.Settings.Visibility.Greedy".Translate(), ref PSI.settings.show_Greedy);
+            listing.DoLabelCheckbox("PSI.Settings.Visibility.Jealous".Translate(), ref PSI.settings.show_Jealous);
+            listing.DoLabelCheckbox("PSI.Settings.Visibility.Lovers".Translate(), ref PSI.settings.show_Lovers);
+            listing.DoLabelCheckbox("PSI.Settings.Visibility.Prosthophile".Translate(), ref PSI.settings.show_Prosthophile);
+            listing.DoLabelCheckbox("PSI.Settings.Visibility.Prosthophobe".Translate(), ref PSI.settings.show_Prosthophobe);
 
             listing.OverrideColumnWidth = 230f;
             if (listing.DoTextButton("PSI.Settings.ReturnButton".Translate()))

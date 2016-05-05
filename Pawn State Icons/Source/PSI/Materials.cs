@@ -28,9 +28,12 @@ namespace PSI
         Drunk,
         ApparelHealth,
         Pacific,
-        LacksBionics,
+        Prosthophile,
+        Prosthophobe,
         NightOwl,
         Greedy,
+        Jealous,
+        Love,
         Length
     }
 

@@ -6,6 +6,7 @@ using UnityEngine;
 using Verse;
 using Verse.AI;
 
+
 namespace PSI
 {
     // ReSharper disable once ClassNeverInstantiated.Global
@@ -97,6 +98,8 @@ namespace PSI
             XmlSaver.SaveDataObject(PSI.settings, path);
         }
 
+        #region Draw icons
+
         private static void DrawIcon(Vector3 bodyPos, Vector3 posOffset, Icons icon, Color color)
         {
             var material = materials[icon];
@@ -166,6 +169,8 @@ namespace PSI
             }
         }
 
+#endregion
+
         private static void UpdateColonistStats(Pawn colonist)
         {
             if (!_statsDict.ContainsKey(colonist))
@@ -174,7 +179,6 @@ namespace PSI
             var pawnStats = _statsDict[colonist];
 
             pawnStats.pawn_isNudist = false;
-            pawnStats.pawn_lacksBionics = false;
 
             foreach (var trait in colonist.story.traits.allTraits)
             {
@@ -183,15 +187,7 @@ namespace PSI
                     case "Nudist":
                         pawnStats.pawn_isNudist = true;
                         continue;
-                    case "Prosthophile":
-                        pawnStats.pawn_lacksBionics = true;
-                        continue;
-                    case "NightOwl":
-                        pawnStats.pawn_isNightOwl = true;
-                        continue;
-                    case "Greedy":
-                        pawnStats.pawn_isGreedy = true;
-                        continue;
+
                     default:
                         continue;
                 }
@@ -215,8 +211,10 @@ namespace PSI
                 var jobDriver = colonist.jobs.curDriver;
                 var job = colonist.jobs.curJob;
                 var targetInfo = job.targetA;
+
                 if (jobDriver is JobDriver_HaulToContainer || jobDriver is JobDriver_HaulToCell || (jobDriver is JobDriver_FoodDeliver || jobDriver is JobDriver_FoodFeedPatient) || jobDriver is JobDriver_TakeToBed)
                     targetInfo = job.targetB;
+
                 if (jobDriver is JobDriver_DoBill)
                 {
                     var jobDriverDoBill = (JobDriver_DoBill)jobDriver;
@@ -225,16 +223,22 @@ namespace PSI
                     else if (jobDriverDoBill.workLeft <= 0.00999999977648258)
                         targetInfo = job.targetB;
                 }
+
                 if (jobDriver is JobDriver_Hunt && colonist.carrier?.CarriedThing != null)
                     targetInfo = job.targetB;
+
                 if (job.def == JobDefOf.Wait)
                     targetInfo = null;
+
                 if (jobDriver is JobDriver_Ingest)
                     targetInfo = null;
+
                 if (job.def == JobDefOf.LayDown && colonist.InBed())
                     targetInfo = null;
+
                 if (!job.playerForced && job.def == JobDefOf.Goto)
                     targetInfo = null;
+
                 bool flag;
                 if (targetInfo != null)
                 {
@@ -249,6 +253,7 @@ namespace PSI
                     pawnStats.TargetPos = vector3 + new Vector3(0.0f, 3f, 0.0f);
                 }
             }
+
             var temperatureForCell = GenTemperature.GetTemperatureForCell(colonist.Position);
             pawnStats.pawn_TooCold = (float)((colonist.ComfortableTemperatureRange().min - (double)settings.limit_TempComfortOffset - temperatureForCell) / 10.0);
             pawnStats.pawn_TooHot = (float)((temperatureForCell - (double)colonist.ComfortableTemperatureRange().max - settings.limit_TempComfortOffset) / 10.0);
@@ -256,12 +261,14 @@ namespace PSI
             pawnStats.pawn_TooHot = Mathf.Clamp(pawnStats.pawn_TooHot, 0.0f, 2f);
             pawnStats.DiseaseDisappearance = 1f;
             pawnStats.pawn_Drunkness = DrugUtility.DrunknessPercent(colonist);
+
             foreach (var hediff in colonist.health.hediffSet.hediffs)
             {
                 var hediffWithComps = (HediffWithComps)hediff;
                 if (hediffWithComps != null && !hediffWithComps.FullyImmune() && (hediffWithComps.Visible && !hediffWithComps.IsOld()) && ((hediffWithComps.CurStage == null || hediffWithComps.CurStage.everVisible) && (hediffWithComps.def.tendable || hediffWithComps.def.naturallyHealed)))
                     pawnStats.DiseaseDisappearance = Math.Min(pawnStats.DiseaseDisappearance, colonist.health.immunity.GetImmunity(hediffWithComps.def));
             }
+
             var num1 = 999f;
             var wornApparel = colonist.apparel.WornApparel;
             foreach (var apparel in wornApparel)
@@ -279,19 +286,32 @@ namespace PSI
             if (colonist.health.hediffSet.AnyHediffMakesSickThought)
                 pawnStats.pawn_hasSickThought = true;
 
-            //       if (colonist.story.traits.allTraits.Contains)
 
             _statsDict[colonist] = pawnStats;
+        }
+
+        public static Boolean HasMood(Pawn pawn, ThoughtDef Tdef)
+        {
+            if (pawn.needs.mood.thoughts.DistinctThoughtDefs.Contains(Tdef))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         // ReSharper disable once UnusedMember.Global
         public virtual void FixedUpdate()
         {
             fDelta += Time.fixedDeltaTime;
+
             if (fDelta < 0.1)
                 return;
             fDelta = 0.0;
             inGame = GameObject.Find("CameraMap");
+
             if (!inGame || !_iconsEnabled)
                 return;
             foreach (var colonist in Find.Map.mapPawns.FreeColonistsAndPrisoners)
@@ -312,6 +332,7 @@ namespace PSI
             var dialogOptions = Find.WindowStack.WindowOfType<Dialog_Options>();
             var flag1 = dialogOptions != null;
             var flag2 = Find.WindowStack.IsOpen(typeof(Dialog_Settings));
+
             if (flag1 && flag2)
             {
                 modSettingsDialog.OptionsDialog = dialogOptions;
@@ -344,11 +365,13 @@ namespace PSI
             if (animal.Dead || animal.holder != null)
                 return;
             var drawPos = animal.DrawPos;
+
             if (!settings.show_Aggressive || animal.MentalStateDef != MentalStateDefOf.Berserk && animal.MentalStateDef != MentalStateDefOf.Manhunter)
                 return;
             var bodyPos = drawPos;
             DrawIcon(bodyPos, 0, Icons.Aggressive, Color.red);
         }
+
 
         private static void DrawColonistIcons(Pawn colonist)
         {
@@ -431,15 +454,6 @@ namespace PSI
             if (settings.show_Disease && pawnStats.pawn_hasSickThought && pawnStats.DiseaseDisappearance < settings.limit_DiseaseLess)
                 DrawIcon(drawPos, num1++, Icons.Disease, pawnStats.DiseaseDisappearance / settings.limit_DiseaseLess);
 
-            if (settings.show_Bionics && pawnStats.pawn_lacksBionics)
-                DrawIcon(drawPos, num1++, Icons.LacksBionics, Color.white);
-
-            if (settings.show_NightOwl && pawnStats.pawn_isNightOwl)
-                DrawIcon(drawPos, num1++, Icons.NightOwl, Color.white);
-
-            if (settings.show_Greedy && pawnStats.pawn_isGreedy)
-                DrawIcon(drawPos, num1++, Icons.Greedy, Color.white);
-
             if (settings.show_Bloodloss && pawnStats.pawn_BleedRate > 0.0f)
                 DrawIcon(drawPos, num1++, Icons.Bloodloss, new Color(1f, 0.0f, 0.0f, pawnStats.pawn_BleedRate));
 
@@ -453,6 +467,36 @@ namespace PSI
 
             if (!settings.show_TargetPoint || !(pawnStats.TargetPos != Vector3.zero))
                 return;
+
+            if (settings.show_Greedy && HasMood(colonist, ThoughtDef.Named("Greedy")))
+            {
+                DrawIcon(drawPos, num1++, Icons.Greedy, Color.white);
+            }
+
+            if (settings.show_Jealous && HasMood(colonist, ThoughtDef.Named("Jealous")))
+            {
+                DrawIcon(drawPos, num1++, Icons.Jealous, Color.white);
+            }
+
+            if (settings.show_Prosthophile && HasMood(colonist, ThoughtDef.Named("ProsthophileNoProsthetic")))
+            {
+                DrawIcon(drawPos, num1++, Icons.Prosthophile, Color.white);
+            }
+
+            if (settings.show_Prosthophobe && HasMood(colonist, ThoughtDef.Named("ProsthophobeUnhappy")))
+            {
+                DrawIcon(drawPos, num1++, Icons.Prosthophobe, Color.white);
+            }
+
+            if (settings.show_NightOwl && HasMood(colonist, ThoughtDef.Named("NightOwlDuringTheDay")))
+            {
+                DrawIcon(drawPos, num1++, Icons.NightOwl, Color.red);
+            }
+
+            if (settings.show_Lovers  && HasMood(colonist, ThoughtDef.Named("WantToSleepWithSpouseOrLover")))
+            {
+                DrawIcon(drawPos, num1++, Icons.Love, Color.red);
+            }
 
             DrawIcon(pawnStats.TargetPos, Vector3.zero, Icons.Target, targetColor);
         }
