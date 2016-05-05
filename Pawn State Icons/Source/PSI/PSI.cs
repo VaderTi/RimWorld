@@ -493,7 +493,7 @@ namespace PSI
 
             if (settings.show_NightOwl && HasMood(colonist, ThoughtDef.Named("NightOwlDuringTheDay")))
             {
-                DrawIcon(drawPos, num1++, Icons.NightOwl, Color.red);
+                DrawIcon(drawPos, num1++, Icons.NightOwl, Color.white);
             }
 
             if (settings.show_Lovers && HasMood(colonist, ThoughtDef.Named("WantToSleepWithSpouseOrLover")))
