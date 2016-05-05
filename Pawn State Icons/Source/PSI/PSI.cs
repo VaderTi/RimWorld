@@ -178,7 +178,8 @@ namespace PSI
 
             var pawnStats = _statsDict[colonist];
 
-            var efficiency = 10f;
+            // efficiency
+            float efficiency = 10f;
 
             foreach (var activity in pawnCapacities)
             {
@@ -189,6 +190,8 @@ namespace PSI
             if (efficiency < 0.0)
                 efficiency = 0.0f;
             pawnStats.pawn_TotalEfficiency = efficiency;
+
+            //target
             pawnStats.TargetPos = Vector3.zero;
 
             if (colonist.jobs.curJob != null)
@@ -239,22 +242,26 @@ namespace PSI
                 }
             }
 
+            // temperature
             var temperatureForCell = GenTemperature.GetTemperatureForCell(colonist.Position);
             pawnStats.pawn_TooCold = (float)((colonist.ComfortableTemperatureRange().min - (double)settings.limit_TempComfortOffset - temperatureForCell) / 10.0);
             pawnStats.pawn_TooHot = (float)((temperatureForCell - (double)colonist.ComfortableTemperatureRange().max - settings.limit_TempComfortOffset) / 10.0);
             pawnStats.pawn_TooCold = Mathf.Clamp(pawnStats.pawn_TooCold, 0.0f, 2f);
             pawnStats.pawn_TooHot = Mathf.Clamp(pawnStats.pawn_TooHot, 0.0f, 2f);
+
+
+            // Health Calc
             pawnStats.DiseaseDisappearance = 1f;
             pawnStats.pawn_Drunkness = DrugUtility.DrunknessPercent(colonist);
-            
-            // Health Calc
+
+
             foreach (var hediff in colonist.health.hediffSet.hediffs)
             {
                 var hediffWithComps = (HediffWithComps)hediff;
-                if (hediffWithComps != null 
-                    && !hediffWithComps.FullyImmune() 
-                    && (hediffWithComps.Visible 
-                    && !hediffWithComps.IsOld()) 
+                if (hediffWithComps != null
+                    && !hediffWithComps.FullyImmune()
+                    && (hediffWithComps.Visible
+                    && !hediffWithComps.IsOld())
                     && ((hediffWithComps.CurStage == null || hediffWithComps.CurStage.everVisible) && (hediffWithComps.def.tendable || hediffWithComps.def.naturallyHealed))
                     && hediffWithComps.def.PossibleToDevelopImmunity())
 
@@ -271,6 +278,7 @@ namespace PSI
                     num1 = num2;
             }
             pawnStats.pawn_ApparelHealth = num1;
+
             pawnStats.pawn_BleedRate = Mathf.Clamp01(colonist.health.hediffSet.BleedingRate * settings.limit_BleedMult);
 
             _statsDict[colonist] = pawnStats;
@@ -287,7 +295,6 @@ namespace PSI
                 return false;
             }
         }
-
 
         // ReSharper disable once UnusedMember.Global
         public virtual void FixedUpdate()
@@ -431,7 +438,7 @@ namespace PSI
                 if (colonist.MentalStateDef == MentalStateDefOf.BingingAlcohol)
                     DrawIcon(drawPos, num1++, Icons.Drunk, Color.red);
                 else if (pawnStats.pawn_Drunkness > 0.05)
-                    DrawIcon(drawPos, num1++, Icons.Drunk, pawnStats.pawn_Drunkness, new Color(1f, 1f, 1f, 0.2f), Color.white, new Color(1f, 0.1f, 0.0f));
+                    DrawIcon(drawPos, num1++, Icons.Drunk, pawnStats.pawn_Drunkness, new Color(1f, 1f, 1f, 0.2f), Color.white, Color.red);
             }
 
             // Effectiveness
@@ -440,20 +447,36 @@ namespace PSI
 
             // Disease & Bloodloss
             if (settings.show_Disease)
-            { 
+            {
                 if (HasMood(colonist, ThoughtDef.Named("Sick")))
                     DrawIcon(drawPos, num1++, Icons.Sick, Color.white);
-                if (colonist.health.NeedsMedicalRest)
-                    DrawIcon(drawPos, num1++, Icons.Disease, Color.yellow);
-                if (pawnStats.DiseaseDisappearance < settings.limit_DiseaseLess)
-                    DrawIcon(drawPos, num1++, Icons.Disease, pawnStats.DiseaseDisappearance / settings.limit_DiseaseLess);
+
+                if (colonist.health.NeedsMedicalRest && !colonist.health.ShouldDoSurgeryNow)
+                    DrawIcon(drawPos, num1++, Icons.MedicalAttention, new Color(1f, 0.3f, 0f));
+                else
+                if (colonist.health.ShouldDoSurgeryNow)
+                    DrawIcon(drawPos, num1++, Icons.MedicalAttention, Color.white);
+
+                if ((pawnStats.DiseaseDisappearance < settings.limit_DiseaseLess) && (colonist.health.summaryHealth.SummaryHealthPercent < 1f))
+                {
+                    if ((pawnStats.DiseaseDisappearance / settings.limit_DiseaseLess) < colonist.health.summaryHealth.SummaryHealthPercent)
+                    DrawIcon(drawPos, num1++, Icons.Disease, pawnStats.DiseaseDisappearance / settings.limit_DiseaseLess, new Color(1f, 0.3f, 0f), Color.white);
+                    else
+                    DrawIcon(drawPos, num1++, Icons.Disease, colonist.health.summaryHealth.SummaryHealthPercent, Color.red, Color.white);
+                }
+
+                else if (pawnStats.DiseaseDisappearance < settings.limit_DiseaseLess)
+                    DrawIcon(drawPos, num1++, Icons.Disease, pawnStats.DiseaseDisappearance / settings.limit_DiseaseLess, new Color(1f, 0.3f, 0f), Color.white);
+
+                else if (colonist.health.summaryHealth.SummaryHealthPercent < 1f)
+                    DrawIcon(drawPos, num1++, Icons.Disease, colonist.health.summaryHealth.SummaryHealthPercent, Color.red, Color.white);
             }
 
             if (settings.show_Bloodloss && pawnStats.pawn_BleedRate > 0.0f)
                 DrawIcon(drawPos, num1++, Icons.Bloodloss, new Color(1f, 0.0f, 0.0f, pawnStats.pawn_BleedRate));
 
-            // Apparel
-            if (settings.show_ApparelHealth && pawnStats.pawn_ApparelHealth < (double)settings.limit_ApparelHealthLess)
+                // Apparel
+                if (settings.show_ApparelHealth && pawnStats.pawn_ApparelHealth < (double)settings.limit_ApparelHealthLess)
             {
                 var bodyPos = drawPos;
                 var num2 = num1;

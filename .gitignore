@@ -250,3 +250,9 @@ paket-files/
 # JetBrains Rider
 .idea/
 *.sln.iml
+/Apparello
+/Community Core Library
+/Core
+/RW_FluffyRelations-0.13.1.1
+/RW_MedicalInfo-0.13.0.1
+/AutoEquip/

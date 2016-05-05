@@ -35,13 +35,14 @@ namespace PSI
         Jealous,
         Love,
         Sick,
+        MedicalAttention,
         Length
     }
 
     internal class Materials
     {
         // ReSharper disable once FieldCanBeMadeReadOnly.Local
-        private Material[] _data = new Material[30];
+        private Material[] _data = new Material[40];
         private readonly string _matLibName;
 
         public Material this[Icons icon] => _data[(int)icon];
