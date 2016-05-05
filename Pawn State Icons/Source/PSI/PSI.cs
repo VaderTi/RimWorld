@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -165,12 +166,7 @@ namespace PSI
                         continue;
                 }
             }
-            var efficiency = 10f;
-            foreach (var activity in _pawnCapacities)
-            {
-                if (activity != PawnCapacityDefOf.Consciousness)
-                    efficiency = Math.Min(efficiency, colonist.health.capacities.GetEfficiency(activity));
-            }
+            var efficiency = (from activity in _pawnCapacities where activity != PawnCapacityDefOf.Consciousness select colonist.health.capacities.GetEfficiency(activity)).Concat(new[] {10f}).Min();
             if (efficiency < 0.0)
                 efficiency = 0.0f;
             pawnStats.TotalEfficiency = efficiency;
@@ -266,14 +262,14 @@ namespace PSI
         private static void UpdateOptionsDialog()
         {
             var dialogOptions = Find.WindowStack.WindowOfType<Dialog_Options>();
-            var flag1 = dialogOptions != null;
-            var flag2 = Find.WindowStack.IsOpen(typeof(Dialog_Settings));
-            if (flag1 && flag2)
+            var isDialog = dialogOptions != null;
+            var isOpen = Find.WindowStack.IsOpen(typeof(Dialog_Settings));
+            if (isDialog && isOpen)
             {
                 _settingsDialog.OptionsDialog = dialogOptions;
                 RecalcIconPositions();
             }
-            else if (flag1 && !flag2)
+            else if (isDialog && !isOpen)
             {
                 if (!_settingsDialog.CloseButtonClicked)
                 {
@@ -283,13 +279,13 @@ namespace PSI
                 else
                     dialogOptions.Close();
             }
-            else if (!flag1 && flag2)
+            else if (!isDialog && isOpen)
             {
                 _settingsDialog.Close(false);
             }
             else
             {
-                if (flag1 || flag2)
+                if (isDialog || isOpen)
                     return;
                 _settingsDialog.CloseButtonClicked = false;
             }

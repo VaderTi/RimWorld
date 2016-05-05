@@ -100,15 +100,15 @@ namespace PSI
                     {
                         try
                         {
-                            var settings = XmlLoader.ItemFromXmlFile<Settings>(setname);
-                            PSI.Settings.LimitBleedMult = settings.LimitBleedMult;
-                            PSI.Settings.LimitDiseaseLess = settings.LimitDiseaseLess;
-                            PSI.Settings.LimitEfficiencyLess = settings.LimitEfficiencyLess;
-                            PSI.Settings.LimitFoodLess = settings.LimitFoodLess;
-                            PSI.Settings.LimitMoodLess = settings.LimitMoodLess;
-                            PSI.Settings.LimitRestLess = settings.LimitRestLess;
-                            PSI.Settings.LimitApparelHealthLess = settings.LimitApparelHealthLess;
-                            PSI.Settings.LimitTempComfortOffset = settings.LimitTempComfortOffset;
+                            var fromXmlFile = XmlLoader.ItemFromXmlFile<Settings>(setname);
+                            PSI.Settings.LimitBleedMult = fromXmlFile.LimitBleedMult;
+                            PSI.Settings.LimitDiseaseLess = fromXmlFile.LimitDiseaseLess;
+                            PSI.Settings.LimitEfficiencyLess = fromXmlFile.LimitEfficiencyLess;
+                            PSI.Settings.LimitFoodLess = fromXmlFile.LimitFoodLess;
+                            PSI.Settings.LimitMoodLess = fromXmlFile.LimitMoodLess;
+                            PSI.Settings.LimitRestLess = fromXmlFile.LimitRestLess;
+                            PSI.Settings.LimitApparelHealthLess = fromXmlFile.LimitApparelHealthLess;
+                            PSI.Settings.LimitTempComfortOffset = fromXmlFile.LimitTempComfortOffset;
                         }
                         catch (IOException)
                         {
@@ -188,15 +188,15 @@ namespace PSI
                     {
                         try
                         {
-                            var settings = XmlLoader.ItemFromXmlFile<Settings>(setname);
-                            PSI.Settings.IconDistanceX = settings.IconDistanceX;
-                            PSI.Settings.IconDistanceY = settings.IconDistanceY;
-                            PSI.Settings.IconOffsetX = settings.IconOffsetX;
-                            PSI.Settings.IconOffsetY = settings.IconOffsetY;
-                            PSI.Settings.IconsHorizontal = settings.IconsHorizontal;
-                            PSI.Settings.IconsScreenScale = settings.IconsScreenScale;
-                            PSI.Settings.IconsInColumn = settings.IconsInColumn;
-                            PSI.Settings.IconSize = settings.IconSize;
+                            var fromXmlFile = XmlLoader.ItemFromXmlFile<Settings>(setname);
+                            PSI.Settings.IconDistanceX = fromXmlFile.IconDistanceX;
+                            PSI.Settings.IconDistanceY = fromXmlFile.IconDistanceY;
+                            PSI.Settings.IconOffsetX = fromXmlFile.IconOffsetX;
+                            PSI.Settings.IconOffsetY = fromXmlFile.IconOffsetY;
+                            PSI.Settings.IconsHorizontal = fromXmlFile.IconsHorizontal;
+                            PSI.Settings.IconsScreenScale = fromXmlFile.IconsScreenScale;
+                            PSI.Settings.IconsInColumn = fromXmlFile.IconsInColumn;
+                            PSI.Settings.IconSize = fromXmlFile.IconSize;
                         }
                         catch (IOException)
                         {
@@ -237,14 +237,21 @@ namespace PSI
             var listing = new Listing_Standard(inRect);
             DoHeading(listing, "Pawn State Icons", false);
             listing.OverrideColumnWidth = currentWindowRect.width;
-            if (Page == "showhide")
-                FillPageShowHide(listing);
-            else if (Page == "arrange")
-                FillPageArrangement(listing);
-            else if (Page == "limits")
-                FillPageLimits(listing);
-            else
-                FillPageMain(listing);
+            switch (Page)
+            {
+                case "showhide":
+                    FillPageShowHide(listing);
+                    break;
+                case "arrange":
+                    FillPageArrangement(listing);
+                    break;
+                case "limits":
+                    FillPageLimits(listing);
+                    break;
+                default:
+                    FillPageMain(listing);
+                    break;
+            }
             listing.End();
         }
 
