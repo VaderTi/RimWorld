@@ -34,6 +34,7 @@ namespace PSI
         Greedy,
         Jealous,
         Love,
+        Sick,
         Length
     }
 

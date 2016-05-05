@@ -169,7 +169,7 @@ namespace PSI
             }
         }
 
-#endregion
+        #endregion
 
         private static void UpdateColonistStats(Pawn colonist)
         {
@@ -177,21 +177,6 @@ namespace PSI
                 _statsDict.Add(colonist, new PawnStats());
 
             var pawnStats = _statsDict[colonist];
-
-            pawnStats.pawn_isNudist = false;
-
-            foreach (var trait in colonist.story.traits.allTraits)
-            {
-                switch (trait.def.defName)
-                {
-                    case "Nudist":
-                        pawnStats.pawn_isNudist = true;
-                        continue;
-
-                    default:
-                        continue;
-                }
-            }
 
             var efficiency = 10f;
 
@@ -261,14 +246,22 @@ namespace PSI
             pawnStats.pawn_TooHot = Mathf.Clamp(pawnStats.pawn_TooHot, 0.0f, 2f);
             pawnStats.DiseaseDisappearance = 1f;
             pawnStats.pawn_Drunkness = DrugUtility.DrunknessPercent(colonist);
-
+            
+            // Health Calc
             foreach (var hediff in colonist.health.hediffSet.hediffs)
             {
                 var hediffWithComps = (HediffWithComps)hediff;
-                if (hediffWithComps != null && !hediffWithComps.FullyImmune() && (hediffWithComps.Visible && !hediffWithComps.IsOld()) && ((hediffWithComps.CurStage == null || hediffWithComps.CurStage.everVisible) && (hediffWithComps.def.tendable || hediffWithComps.def.naturallyHealed)))
+                if (hediffWithComps != null 
+                    && !hediffWithComps.FullyImmune() 
+                    && (hediffWithComps.Visible 
+                    && !hediffWithComps.IsOld()) 
+                    && ((hediffWithComps.CurStage == null || hediffWithComps.CurStage.everVisible) && (hediffWithComps.def.tendable || hediffWithComps.def.naturallyHealed))
+                    && hediffWithComps.def.PossibleToDevelopImmunity())
+
                     pawnStats.DiseaseDisappearance = Math.Min(pawnStats.DiseaseDisappearance, colonist.health.immunity.GetImmunity(hediffWithComps.def));
             }
 
+            // Apparel Calc
             var num1 = 999f;
             var wornApparel = colonist.apparel.WornApparel;
             foreach (var apparel in wornApparel)
@@ -279,13 +272,6 @@ namespace PSI
             }
             pawnStats.pawn_ApparelHealth = num1;
             pawnStats.pawn_BleedRate = Mathf.Clamp01(colonist.health.hediffSet.BleedingRate * settings.limit_BleedMult);
-
-            //if (colonist.health.HasHediffsNeedingTend())
-            //    pawnStats.pawn_hasDisease = true;
-
-            if (colonist.health.hediffSet.AnyHediffMakesSickThought)
-                pawnStats.pawn_hasSickThought = true;
-
 
             _statsDict[colonist] = pawnStats;
         }
@@ -301,6 +287,7 @@ namespace PSI
                 return false;
             }
         }
+
 
         // ReSharper disable once UnusedMember.Global
         public virtual void FixedUpdate()
@@ -372,7 +359,6 @@ namespace PSI
             DrawIcon(bodyPos, 0, Icons.Aggressive, Color.red);
         }
 
-
         private static void DrawColonistIcons(Pawn colonist)
         {
             var num1 = 0;
@@ -405,9 +391,7 @@ namespace PSI
             if (settings.show_Tired && colonist.needs.rest.CurLevel < (double)settings.limit_RestLess)
                 DrawIcon(drawPos, num1++, Icons.Tired, colonist.needs.rest.CurLevel / settings.limit_RestLess);
 
-            if (settings.show_Naked && !pawnStats.pawn_isNudist && colonist.apparel.PsychologicallyNude)
-                DrawIcon(drawPos, num1++, Icons.Naked, Color.white);
-
+            // Too Cold & too hot
             if (settings.show_Cold && pawnStats.pawn_TooCold > 0.0)
             {
                 if (pawnStats.pawn_TooCold >= 0.0)
@@ -428,6 +412,7 @@ namespace PSI
                     DrawIcon(drawPos, num1++, Icons.Hot, pawnStats.pawn_TooHot - 1f, new Color(1f, 0.7f, 0.0f, 1f), Color.red);
             }
 
+            // Mental States
             if (settings.show_Aggressive && colonist.MentalStateDef == MentalStateDefOf.Berserk)
                 DrawIcon(drawPos, num1++, Icons.Aggressive, Color.red);
 
@@ -440,6 +425,7 @@ namespace PSI
             if (colonist.MentalStateDef == MentalStateDefOf.PanicFlee)
                 DrawIcon(drawPos, num1++, Icons.Panic, Color.yellow);
 
+            // Binging on alvohol
             if (settings.show_Drunk)
             {
                 if (colonist.MentalStateDef == MentalStateDefOf.BingingAlcohol)
@@ -448,15 +434,25 @@ namespace PSI
                     DrawIcon(drawPos, num1++, Icons.Drunk, pawnStats.pawn_Drunkness, new Color(1f, 1f, 1f, 0.2f), Color.white, new Color(1f, 0.1f, 0.0f));
             }
 
+            // Effectiveness
             if (settings.show_Effectiveness && pawnStats.pawn_TotalEfficiency < (double)settings.limit_EfficiencyLess)
                 DrawIcon(drawPos, num1++, Icons.Effectiveness, pawnStats.pawn_TotalEfficiency / settings.limit_EfficiencyLess);
 
-            if (settings.show_Disease && pawnStats.pawn_hasSickThought && pawnStats.DiseaseDisappearance < settings.limit_DiseaseLess)
-                DrawIcon(drawPos, num1++, Icons.Disease, pawnStats.DiseaseDisappearance / settings.limit_DiseaseLess);
+            // Disease & Bloodloss
+            if (settings.show_Disease)
+            { 
+                if (HasMood(colonist, ThoughtDef.Named("Sick")))
+                    DrawIcon(drawPos, num1++, Icons.Sick, Color.white);
+                if (colonist.health.NeedsMedicalRest)
+                    DrawIcon(drawPos, num1++, Icons.Disease, Color.yellow);
+                if (pawnStats.DiseaseDisappearance < settings.limit_DiseaseLess)
+                    DrawIcon(drawPos, num1++, Icons.Disease, pawnStats.DiseaseDisappearance / settings.limit_DiseaseLess);
+            }
 
             if (settings.show_Bloodloss && pawnStats.pawn_BleedRate > 0.0f)
                 DrawIcon(drawPos, num1++, Icons.Bloodloss, new Color(1f, 0.0f, 0.0f, pawnStats.pawn_BleedRate));
 
+            // Apparel
             if (settings.show_ApparelHealth && pawnStats.pawn_ApparelHealth < (double)settings.limit_ApparelHealthLess)
             {
                 var bodyPos = drawPos;
@@ -465,8 +461,15 @@ namespace PSI
                 DrawIcon(bodyPos, num2, Icons.ApparelHealth, (float)num6);
             }
 
+            // Target Point 
             if (!settings.show_TargetPoint || !(pawnStats.TargetPos != Vector3.zero))
                 return;
+
+            // Traiits and bad thoughts
+            if (settings.show_Naked && HasMood(colonist, ThoughtDef.Named("Naked")))
+            {
+                DrawIcon(drawPos, num1++, Icons.Naked, Color.white);
+            }
 
             if (settings.show_Greedy && HasMood(colonist, ThoughtDef.Named("Greedy")))
             {
@@ -493,7 +496,7 @@ namespace PSI
                 DrawIcon(drawPos, num1++, Icons.NightOwl, Color.red);
             }
 
-            if (settings.show_Lovers  && HasMood(colonist, ThoughtDef.Named("WantToSleepWithSpouseOrLover")))
+            if (settings.show_Lovers && HasMood(colonist, ThoughtDef.Named("WantToSleepWithSpouseOrLover")))
             {
                 DrawIcon(drawPos, num1++, Icons.Love, Color.red);
             }
