@@ -193,6 +193,7 @@ namespace PSI
 
             if (efficiency < 0.0)
                 efficiency = 0.0f;
+
             pawnStats.pawn_TotalEfficiency = efficiency;
 
             //target
@@ -281,6 +282,7 @@ namespace PSI
                 if (num2 >= 0.0 && num2 < (double)num1)
                     num1 = num2;
             }
+
             pawnStats.pawn_ApparelHealth = num1;
 
             pawnStats.pawn_BleedRate = Mathf.Clamp01(colonist.health.hediffSet.BleedingRate * settings.limit_BleedMult);
@@ -316,8 +318,7 @@ namespace PSI
             if (!inGame || !_iconsEnabled)
                 return;
 
-            foreach (var colonist in Find.MapPawns.FreeColonistsAndPrisoners)
-            //               foreach (var colonist in Find.Map.mapPawns.FreeColonistsAndPrisoners.)
+            foreach (var colonist in Find.Map.mapPawns.FreeColonistsAndPrisoners)
             {
                 try
                 {
