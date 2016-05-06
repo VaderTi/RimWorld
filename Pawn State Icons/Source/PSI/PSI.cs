@@ -39,6 +39,7 @@ namespace PSI
 
         private static Vector3[] iconPosVectors;
 
+
         public PSI()
         {
             Reinit();
@@ -102,6 +103,7 @@ namespace PSI
 
         private static void DrawIcon(Vector3 bodyPos, Vector3 posOffset, Icons icon, Color color)
         {
+
             var material = materials[icon];
             if (material == null)
                 return;
@@ -129,6 +131,7 @@ namespace PSI
                 GUI.DrawTexture(position, material.mainTexture, ScaleMode.ScaleToFit, true);
                 GUI.color = guiColor;
             });
+
         }
 
         private static void DrawIcon(Vector3 bodyPos, int num, Icons icon, Color color)
@@ -173,6 +176,7 @@ namespace PSI
 
         private static void UpdateColonistStats(Pawn colonist)
         {
+
             if (!_statsDict.ContainsKey(colonist))
                 _statsDict.Add(colonist, new PawnStats());
 
@@ -282,6 +286,7 @@ namespace PSI
             pawnStats.pawn_BleedRate = Mathf.Clamp01(colonist.health.hediffSet.BleedingRate * settings.limit_BleedMult);
 
             _statsDict[colonist] = pawnStats;
+
         }
 
         public static Boolean HasMood(Pawn pawn, ThoughtDef Tdef)
@@ -296,7 +301,9 @@ namespace PSI
             }
         }
 
+
         // ReSharper disable once UnusedMember.Global
+
         public virtual void FixedUpdate()
         {
             fDelta += Time.fixedDeltaTime;
@@ -308,7 +315,9 @@ namespace PSI
 
             if (!inGame || !_iconsEnabled)
                 return;
-            foreach (var colonist in Find.Map.mapPawns.FreeColonistsAndPrisoners)
+
+            foreach (var colonist in Find.MapPawns.FreeColonistsAndPrisoners)
+            //               foreach (var colonist in Find.Map.mapPawns.FreeColonistsAndPrisoners.)
             {
                 try
                 {
@@ -460,9 +469,9 @@ namespace PSI
                 if ((pawnStats.DiseaseDisappearance < settings.limit_DiseaseLess) && (colonist.health.summaryHealth.SummaryHealthPercent < 1f))
                 {
                     if ((pawnStats.DiseaseDisappearance / settings.limit_DiseaseLess) < colonist.health.summaryHealth.SummaryHealthPercent)
-                    DrawIcon(drawPos, num1++, Icons.Disease, pawnStats.DiseaseDisappearance / settings.limit_DiseaseLess, new Color(1f, 0.3f, 0f), Color.white);
+                        DrawIcon(drawPos, num1++, Icons.Disease, pawnStats.DiseaseDisappearance / settings.limit_DiseaseLess, new Color(1f, 0.3f, 0f), Color.white);
                     else
-                    DrawIcon(drawPos, num1++, Icons.Disease, colonist.health.summaryHealth.SummaryHealthPercent, Color.red, Color.white);
+                        DrawIcon(drawPos, num1++, Icons.Disease, colonist.health.summaryHealth.SummaryHealthPercent, Color.red, Color.white);
                 }
 
                 else if (pawnStats.DiseaseDisappearance < settings.limit_DiseaseLess)
@@ -475,8 +484,8 @@ namespace PSI
             if (settings.show_Bloodloss && pawnStats.pawn_BleedRate > 0.0f)
                 DrawIcon(drawPos, num1++, Icons.Bloodloss, new Color(1f, 0.0f, 0.0f, pawnStats.pawn_BleedRate));
 
-                // Apparel
-                if (settings.show_ApparelHealth && pawnStats.pawn_ApparelHealth < (double)settings.limit_ApparelHealthLess)
+            // Apparel
+            if (settings.show_ApparelHealth && pawnStats.pawn_ApparelHealth < (double)settings.limit_ApparelHealthLess)
             {
                 var bodyPos = drawPos;
                 var num2 = num1;
@@ -529,6 +538,7 @@ namespace PSI
 
         // ReSharper disable once InconsistentNaming
         // ReSharper disable once UnusedMember.Global
+
         public virtual void OnGUI()
         {
             if (!inGame || Find.TickManager.Paused)
@@ -546,6 +556,7 @@ namespace PSI
         }
 
         // ReSharper disable once UnusedMember.Global
+
         public virtual void Update()
         {
             if (!inGame)

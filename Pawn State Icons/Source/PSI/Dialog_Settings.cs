@@ -46,6 +46,7 @@ namespace PSI
                 }
                 Find.WindowStack.Add(new FloatMenu(options));
             }
+
             if (listing.DoTextButton("PSI.Settings.LoadPresetButton".Translate()))
             {
                 var strArray = new string[0];
@@ -72,14 +73,20 @@ namespace PSI
                 }
                 Find.WindowStack.Add(new FloatMenu(options));
             }
+
             listing.DoGap();
+
             DoHeading(listing, "PSI.Settings.Advanced");
+
             if (listing.DoTextButton("PSI.Settings.VisibilityButton".Translate()))
                 Page = "showhide";
+
             if (listing.DoTextButton("PSI.Settings.ArrangementButton".Translate()))
                 Page = "arrange";
+
             if (!listing.DoTextButton("PSI.Settings.SensitivityButton".Translate()))
                 return;
+
             Page = "limits";
         }
 
@@ -116,25 +123,36 @@ namespace PSI
                         }
                     }));
                 }
+
                 Find.WindowStack.Add(new FloatMenu(options));
             }
+
             listing.DoGap();
+
             listing.DoLabel("PSI.Settings.Sensitivity.Bleeding".Translate() + ("PSI.Settings.Sensitivity.Bleeding." + Math.Round(PSI.settings.limit_BleedMult - 0.25)).Translate());
             PSI.settings.limit_BleedMult = listing.DoSlider(PSI.settings.limit_BleedMult, 0.5f, 5f);
+
             listing.DoLabel("PSI.Settings.Sensitivity.Injured".Translate() + (int)(PSI.settings.limit_EfficiencyLess * 100.0) + "%");
             PSI.settings.limit_EfficiencyLess = listing.DoSlider(PSI.settings.limit_EfficiencyLess, 0.01f, 0.99f);
+
             listing.DoLabel("PSI.Settings.Sensitivity.Food".Translate() + (int)(PSI.settings.limit_FoodLess * 100.0) + "%");
             PSI.settings.limit_FoodLess = listing.DoSlider(PSI.settings.limit_FoodLess, 0.01f, 0.99f);
+
             listing.DoLabel("PSI.Settings.Sensitivity.Mood".Translate() + (int)(PSI.settings.limit_MoodLess * 100.0) + "%");
             PSI.settings.limit_MoodLess = listing.DoSlider(PSI.settings.limit_MoodLess, 0.01f, 0.99f);
+
             listing.DoLabel("PSI.Settings.Sensitivity.Rest".Translate() + (int)(PSI.settings.limit_RestLess * 100.0) + "%");
             PSI.settings.limit_RestLess = listing.DoSlider(PSI.settings.limit_RestLess, 0.01f, 0.99f);
+
             listing.DoLabel("PSI.Settings.Sensitivity.ApparelHealth".Translate() + (int)(PSI.settings.limit_ApparelHealthLess * 100.0) + "%");
             PSI.settings.limit_ApparelHealthLess = listing.DoSlider(PSI.settings.limit_ApparelHealthLess, 0.01f, 0.99f);
+
             listing.DoLabel("PSI.Settings.Sensitivity.Temperature".Translate() + (int)PSI.settings.limit_TempComfortOffset + "C");
             PSI.settings.limit_TempComfortOffset = listing.DoSlider(PSI.settings.limit_TempComfortOffset, -10f, 10f);
+
             if (!listing.DoTextButton("PSI.Settings.ReturnButton".Translate()))
                 return;
+
             Page = "main";
         }
 
@@ -181,6 +199,7 @@ namespace PSI
         private void FillPageArrangement(Listing_Standard listing)
         {
             DoHeading(listing, "PSI.Settings.Arrangement.Header");
+
             if (listing.DoTextButton("PSI.Settings.LoadPresetButton".Translate()))
             {
                 var strArray = new string[0];
@@ -209,29 +228,42 @@ namespace PSI
                         {
                             Log.Error("PSI.Settings.LoadPreset.UnableToLoad".Translate() + setname);
                         }
+
+
                     }));
                 }
                 Find.WindowStack.Add(new FloatMenu(options));
             }
+
             var num = (int)(PSI.settings.iconSize * 4.5);
+
             if (num > 8)
                 num = 8;
             else if (num < 0)
                 num = 0;
+
             listing.DoLabel("PSI.Settings.Arrangement.IconSize".Translate() + ("PSI.Settings.SizeLabel." + num).Translate());
             PSI.settings.iconSize = listing.DoSlider(PSI.settings.iconSize, 0.5f, 2f);
-            listing.DoLabel(string.Concat("PSI.Settings.Arrangement.IconPosition".Translate(), (int) (PSI.settings.iconDistanceX * 100.0), " , ", (int) (PSI.settings.iconDistanceY * 100.0)));
+
+            listing.DoLabel(string.Concat("PSI.Settings.Arrangement.IconPosition".Translate(), (int)(PSI.settings.iconDistanceX * 100.0), " , ", (int)(PSI.settings.iconDistanceY * 100.0)));
             PSI.settings.iconDistanceX = listing.DoSlider(PSI.settings.iconDistanceX, -2f, 2f);
             PSI.settings.iconDistanceY = listing.DoSlider(PSI.settings.iconDistanceY, -2f, 2f);
-            listing.DoLabel(string.Concat("PSI.Settings.Arrangement.IconOffset".Translate(), (int) (PSI.settings.iconOffsetX * 100.0), " , ", (int) (PSI.settings.iconOffsetY * 100.0)));
+
+            listing.DoLabel(string.Concat("PSI.Settings.Arrangement.IconOffset".Translate(), (int)(PSI.settings.iconOffsetX * 100.0), " , ", (int)(PSI.settings.iconOffsetY * 100.0)));
             PSI.settings.iconOffsetX = listing.DoSlider(PSI.settings.iconOffsetX, -2f, 2f);
             PSI.settings.iconOffsetY = listing.DoSlider(PSI.settings.iconOffsetY, -2f, 2f);
+
             listing.DoLabelCheckbox("PSI.Settings.Arrangement.Horizontal".Translate(), ref PSI.settings.iconsHorizontal);
+
             listing.DoLabelCheckbox("PSI.Settings.Arrangement.ScreenScale".Translate(), ref PSI.settings.iconsScreenScale);
+
             listing.DoLabel("PSI.Settings.Arrangement.IconsPerColumn".Translate() + PSI.settings.iconsInColumn);
+
             PSI.settings.iconsInColumn = (int)listing.DoSlider(PSI.settings.iconsInColumn, 1f, 9f);
+
             if (!listing.DoTextButton("PSI.Settings.ReturnButton".Translate()))
                 return;
+
             Page = "main";
         }
 
@@ -239,11 +271,17 @@ namespace PSI
         {
             if (OptionsDialog == null)
                 return;
+
             var rect = OptionsDialog.currentWindowRect;
+
             currentWindowRect = new Rect(rect.xMax - 240f, rect.yMin, 240f, rect.height);
+
             var listing = new Listing_Standard(inRect);
+
             DoHeading(listing, "Pawn State Icons", false);
+
             listing.OverrideColumnWidth = currentWindowRect.width;
+
             if (Page == "showhide")
                 FillPageShowHide(listing);
             else if (Page == "arrange")
@@ -252,6 +290,7 @@ namespace PSI
                 FillPageLimits(listing);
             else
                 FillPageMain(listing);
+
             listing.End();
         }
 
