@@ -385,6 +385,7 @@ namespace PSI
 
             var drawPos = colonist.DrawPos;
 
+            // Pacifc + Unarmed
             if (colonist.skills.GetSkill(SkillDefOf.Melee).TotallyDisabled && colonist.skills.GetSkill(SkillDefOf.Shooting).TotallyDisabled)
             {
                 if (settings.show_Pacific)
@@ -393,18 +394,23 @@ namespace PSI
             else if (settings.show_Unarmed && colonist.equipment.Primary == null && !colonist.IsPrisonerOfColony)
                 DrawIcon(drawPos, num1++, Icons.Unarmed, Color.white);
 
+            // Idle
             if (settings.show_Idle && colonist.mindState.IsIdle)
                 DrawIcon(drawPos, num1++, Icons.Idle, Color.white);
 
+            //Drafted
             if (settings.show_Draft && colonist.drafter.Drafted)
                 DrawIcon(drawPos, num1++, Icons.Draft, Color.white);
 
+            // Bad Mood
             if (settings.show_Sad && colonist.needs.mood.CurLevel < (double)settings.limit_MoodLess)
                 DrawIcon(drawPos, num1++, Icons.Sad, colonist.needs.mood.CurLevel / settings.limit_MoodLess);
 
+            // Hungry
             if (settings.show_Hungry && colonist.needs.food.CurLevel < (double)settings.limit_FoodLess)
                 DrawIcon(drawPos, num1++, Icons.Hungry, colonist.needs.food.CurLevel / settings.limit_FoodLess);
 
+            //Tired
             if (settings.show_Tired && colonist.needs.rest.CurLevel < (double)settings.limit_RestLess)
                 DrawIcon(drawPos, num1++, Icons.Tired, colonist.needs.rest.CurLevel / settings.limit_RestLess);
 
@@ -442,7 +448,7 @@ namespace PSI
             if (colonist.MentalStateDef == MentalStateDefOf.PanicFlee)
                 DrawIcon(drawPos, num1++, Icons.Panic, Color.yellow);
 
-            // Binging on alvohol
+            // Binging on alcohol
             if (settings.show_Drunk)
             {
                 if (colonist.MentalStateDef == MentalStateDefOf.BingingAlcohol)
@@ -455,35 +461,43 @@ namespace PSI
             if (settings.show_Effectiveness && pawnStats.pawn_TotalEfficiency < (double)settings.limit_EfficiencyLess)
                 DrawIcon(drawPos, num1++, Icons.Effectiveness, pawnStats.pawn_TotalEfficiency / settings.limit_EfficiencyLess);
 
-            // Disease & Bloodloss
+            // Disease
             if (settings.show_Disease)
             {
                 if (HasMood(colonist, ThoughtDef.Named("Sick")))
                     DrawIcon(drawPos, num1++, Icons.Sick, Color.white);
 
-                if (colonist.health.NeedsMedicalRest && !colonist.health.ShouldDoSurgeryNow)
-                    DrawIcon(drawPos, num1++, Icons.MedicalAttention, new Color(1f, 0.3f, 0f));
+                if (colonist.health.ShouldBeTendedNow && !colonist.health.ShouldDoSurgeryNow)
+                    DrawIcon(drawPos, num1++, Icons.MedicalAttention, new Color(1f, 0.5f, 0f));
+                else
+                if (colonist.health.ShouldBeTendedNow && colonist.health.ShouldDoSurgeryNow)
+                {
+                    DrawIcon(drawPos, num1++, Icons.MedicalAttention, new Color(1f, 0.5f, 0f));
+                    DrawIcon(drawPos, num1++, Icons.MedicalAttention, Color.blue);
+                }
                 else
                 if (colonist.health.ShouldDoSurgeryNow)
-                    DrawIcon(drawPos, num1++, Icons.MedicalAttention, Color.white);
+                    DrawIcon(drawPos, num1++, Icons.MedicalAttention, Color.blue);
 
                 if ((pawnStats.DiseaseDisappearance < settings.limit_DiseaseLess) && (colonist.health.summaryHealth.SummaryHealthPercent < 1f))
                 {
                     if ((pawnStats.DiseaseDisappearance / settings.limit_DiseaseLess) < colonist.health.summaryHealth.SummaryHealthPercent)
-                        DrawIcon(drawPos, num1++, Icons.Disease, pawnStats.DiseaseDisappearance / settings.limit_DiseaseLess, new Color(1f, 0.3f, 0f), Color.white);
+                        DrawIcon(drawPos, num1++, Icons.Disease, pawnStats.DiseaseDisappearance / settings.limit_DiseaseLess, Color.red, Color.white);
                     else
                         DrawIcon(drawPos, num1++, Icons.Disease, colonist.health.summaryHealth.SummaryHealthPercent, Color.red, Color.white);
                 }
 
                 else if (pawnStats.DiseaseDisappearance < settings.limit_DiseaseLess)
-                    DrawIcon(drawPos, num1++, Icons.Disease, pawnStats.DiseaseDisappearance / settings.limit_DiseaseLess, new Color(1f, 0.3f, 0f), Color.white);
+                    DrawIcon(drawPos, num1++, Icons.Disease, pawnStats.DiseaseDisappearance / settings.limit_DiseaseLess, Color.red, Color.white);
 
                 else if (colonist.health.summaryHealth.SummaryHealthPercent < 1f)
                     DrawIcon(drawPos, num1++, Icons.Disease, colonist.health.summaryHealth.SummaryHealthPercent, Color.red, Color.white);
             }
 
+            // Bloodloss
             if (settings.show_Bloodloss && pawnStats.pawn_BleedRate > 0.0f)
-                DrawIcon(drawPos, num1++, Icons.Bloodloss, new Color(1f, 0.0f, 0.0f, pawnStats.pawn_BleedRate));
+                DrawIcon(drawPos, num1++, Icons.Bloodloss, pawnStats.pawn_BleedRate, Color.red, Color.white);
+
 
             // Apparel
             if (settings.show_ApparelHealth && pawnStats.pawn_ApparelHealth < (double)settings.limit_ApparelHealthLess)
@@ -499,20 +513,6 @@ namespace PSI
                 return;
 
             // Traiits and bad thoughts
-            if (settings.show_Naked && HasMood(colonist, ThoughtDef.Named("Naked")))
-            {
-                DrawIcon(drawPos, num1++, Icons.Naked, Color.white);
-            }
-
-            if (settings.show_Greedy && HasMood(colonist, ThoughtDef.Named("Greedy")))
-            {
-                DrawIcon(drawPos, num1++, Icons.Greedy, Color.white);
-            }
-
-            if (settings.show_Jealous && HasMood(colonist, ThoughtDef.Named("Jealous")))
-            {
-                DrawIcon(drawPos, num1++, Icons.Jealous, Color.white);
-            }
 
             if (settings.show_Prosthophile && HasMood(colonist, ThoughtDef.Named("ProsthophileNoProsthetic")))
             {
@@ -529,11 +529,25 @@ namespace PSI
                 DrawIcon(drawPos, num1++, Icons.NightOwl, Color.white);
             }
 
+            if (settings.show_Greedy && HasMood(colonist, ThoughtDef.Named("Greedy")))
+            {
+                DrawIcon(drawPos, num1++, Icons.Greedy, Color.white);
+            }
+
+            if (settings.show_Jealous && HasMood(colonist, ThoughtDef.Named("Jealous")))
+            {
+                DrawIcon(drawPos, num1++, Icons.Jealous, Color.white);
+            }
+
             if (settings.show_Lovers && HasMood(colonist, ThoughtDef.Named("WantToSleepWithSpouseOrLover")))
             {
                 DrawIcon(drawPos, num1++, Icons.Love, Color.red);
             }
 
+            if (settings.show_Naked && HasMood(colonist, ThoughtDef.Named("Naked")))
+            {
+                DrawIcon(drawPos, num1++, Icons.Naked, Color.white);
+            }
             DrawIcon(pawnStats.TargetPos, Vector3.zero, Icons.Target, targetColor);
         }
 
