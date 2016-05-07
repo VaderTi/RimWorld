@@ -36,6 +36,8 @@ namespace PSI
         Love,
         Sick,
         MedicalAttention,
+        LeftUnburied,
+        DeadColonist,
         Length
     }
 
