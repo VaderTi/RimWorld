@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using Verse;
 
 namespace PSI
 {
@@ -27,7 +26,6 @@ namespace PSI
             _reinjectTime = 0.0f;
             _psiObject = GameObject.Find("PSIMain") ?? new GameObject("PSIMain");
             _psiObject.AddComponent<PSI>();
-            Log.Message("PSI Injected!!");
         }
 
         public void Start()

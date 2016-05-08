@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\Assemblies\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -48,14 +48,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Dialog_Settings.cs" />
-    <Compile Include="Icons.cs" />
     <Compile Include="Materials.cs" />
     <Compile Include="PawnStats.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Initializer.cs" />
     <Compile Include="InitializerBehavior.cs" />
     <Compile Include="PSI.cs" />
-    <Compile Include="Settings.cs" />
+    <Compile Include="ModSettings.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -9,9 +9,12 @@ namespace PSI
     {
         public Initializer()
         {
-            Log.Message("Initialized the Pawn State Icons mod");
+            Log.Message("Initialized the Pawn State Icons mod...");
+
             var iconControllerObject = new GameObject("Initializer");
+
             iconControllerObject.AddComponent<InitializerBehavior>();
+
             Object.DontDestroyOnLoad(iconControllerObject);
         }
 

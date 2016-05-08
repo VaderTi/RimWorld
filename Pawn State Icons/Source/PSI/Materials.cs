@@ -5,10 +5,47 @@ using Verse;
 
 namespace PSI
 {
+    public enum Icons
+    {
+        None,
+        Aggressive,
+        Bloodloss,
+        Dazed,
+        Disease,
+        Draft,
+        Effectiveness,
+        Freezing,
+        Hot,
+        Hungry,
+        Idle,
+        Leave,
+        Naked,
+        Panic,
+        Sad,
+        Target,
+        Tired,
+        Unarmed,
+        Drunk,
+        ApparelHealth,
+        Pacific,
+        Prosthophile,
+        Prosthophobe,
+        NightOwl,
+        Greedy,
+        Jealous,
+        Love,
+        Sick,
+        MedicalAttention,
+        LeftUnburied,
+        DeadColonist,
+        Crowded,
+        Length
+    }
+
     internal class Materials
     {
         // ReSharper disable once FieldCanBeMadeReadOnly.Local
-        private Material[] _data = new Material[21];
+        private Material[] _data = new Material[40];
         private readonly string _matLibName;
 
         public Material this[Icons icon] => _data[(int)icon];
@@ -18,7 +55,7 @@ namespace PSI
             _matLibName = matLib;
         }
 
-        private Material LoadIconMat(string path, bool smooth = false)
+        private static Material LoadIconMat(string path, bool smooth = false)
         {
             var tex = ContentFinder<Texture2D>.Get("UI/Overlays/PawnStateIcons/" + path, false);
             Material material;
