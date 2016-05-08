@@ -510,9 +510,17 @@ namespace PSI
 
             // Target Point 
             if (!settings.show_TargetPoint || !(pawnStats.TargetPos != Vector3.zero))
-                return;
+            DrawIcon(pawnStats.TargetPos, Vector3.zero, Icons.Target, targetColor);
 
             // Traiits and bad thoughts
+
+            // Room Status
+            if (settings.show_RoomStatus && HasMood(colonist, ThoughtDef.Named("Crowded")))
+            {
+                DrawIcon(drawPos, num1++, Icons.Crowded, Color.white);
+            }
+
+
 
             if (settings.show_Prosthophile && HasMood(colonist, ThoughtDef.Named("ProsthophileNoProsthetic")))
             {
@@ -740,7 +748,9 @@ namespace PSI
                 }
             }
 
-            DrawIcon(pawnStats.TargetPos, Vector3.zero, Icons.Target, targetColor);
+            return;
+
+
         }
 
         // ReSharper disable once InconsistentNaming

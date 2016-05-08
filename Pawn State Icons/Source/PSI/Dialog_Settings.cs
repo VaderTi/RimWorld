@@ -178,6 +178,7 @@ namespace PSI
             listing.DoLabelCheckbox("PSI.Settings.Visibility.Lovers".Translate(), ref PSI.settings.show_Lovers);
             listing.DoLabelCheckbox("PSI.Settings.Visibility.Prosthophile".Translate(), ref PSI.settings.show_Prosthophile);
             listing.DoLabelCheckbox("PSI.Settings.Visibility.Prosthophobe".Translate(), ref PSI.settings.show_Prosthophobe);
+            listing.DoLabelCheckbox("PSI.Settings.Visibility.RoomStatus".Translate(), ref PSI.settings.show_RoomStatus);
 
             listing.OverrideColumnWidth = 230f;
             if (listing.DoTextButton("PSI.Settings.ReturnButton".Translate()))

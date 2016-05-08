@@ -38,6 +38,7 @@ namespace PSI
         MedicalAttention,
         LeftUnburied,
         DeadColonist,
+        Crowded,
         Length
     }
 
