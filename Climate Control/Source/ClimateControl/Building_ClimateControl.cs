@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using RimWorld;
 using UnityEngine;
@@ -18,6 +17,7 @@ namespace ClimateControl
     // ReSharper disable once UnusedMember.Global
     // ReSharper disable once InconsistentNaming
     // ReSharper disable once ClassNeverInstantiated.Global
+    [StaticConstructorOnStartup]
     internal class Building_ClimateControl : Building
     {
         private const float EfficiencyLossPerDegreeDifference = 0.007692308f;
@@ -56,9 +56,9 @@ namespace ClimateControl
             _txUiMaxTempPlus = ContentFinder<Texture2D>.Get("UI/Commands/UI_MaxPlus");
         }
 
-        public override void SpawnSetup()
+        public override void SpawnSetup(Map map)
         {
-            base.SpawnSetup();
+            base.SpawnSetup(map);
 
             GetTextures();
 
@@ -87,7 +87,7 @@ namespace ClimateControl
 
             _powerTrader = GetComp<CompPowerTrader>();
 
-            _room = RoomQuery.RoomAt(Position);
+            _room = RoomQuery.RoomAt(Position, Map);
         }
 
         public override void ExposeData()
@@ -104,7 +104,7 @@ namespace ClimateControl
             _txtMinus = Prefs.TemperatureMode == TemperatureDisplayMode.Celsius ? "-1°C" : "-2°F";
             _txtPlus = Prefs.TemperatureMode == TemperatureDisplayMode.Celsius ? "1°C" : "2°F";
 
-            _room = RoomQuery.RoomAt(Position);
+            _room = RoomQuery.RoomAt(Position, Map);
 
             if (!_powerTrader.PowerOn || _room == null || _room.UsesOutdoorTemperature)
             {
@@ -178,14 +178,18 @@ namespace ClimateControl
 
         public override IEnumerable<Gizmo> GetGizmos()
         {
-            var baseGizmos = _powerTrader.CompGetGizmosExtra().ToList();
-            foreach (var t in from t in baseGizmos
-                let baseGizmo = t
-                where baseGizmo == null || baseGizmo.defaultLabel != "CommandTogglePowerLabel".Translate()
-                select t)
-            {
-                yield return t;
-            }
+            //var baseGizmos = _powerTrader.CompGetGizmosExtra().ToList();
+            //foreach (var t in from t in baseGizmos
+            //    let baseGizmo = t
+            //    where baseGizmo == null || baseGizmo.defaultLabel != "CommandTogglePowerLabel".Translate()
+            //    select t)
+            //{
+            //    yield return t;
+            //}
+
+            foreach (var c in _powerTrader.CompGetGizmosExtra())
+                yield return c;
+
 
             var actionMinTempMinus = new Command_Action
             {

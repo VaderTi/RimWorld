@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
+	<Watt>W</Watt>
 	<MinTempMinus>Decrease minimal comfort temperature</MinTempMinus>
 	<MinTempPlus>Increase minimal comfort temperature</MinTempPlus>
 	<MaxTempMinus>Decrease maximal comfort temperature</MaxTempMinus>

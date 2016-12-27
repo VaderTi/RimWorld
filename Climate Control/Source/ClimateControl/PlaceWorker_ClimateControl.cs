@@ -13,15 +13,15 @@ namespace ClimateControl
 
         public override void DrawGhost(ThingDef def, IntVec3 center, Rot4 rot)
         {
-            foreach (
+           foreach (
                 var unit in
-                    Find.ListerBuildings.AllBuildingsColonistOfClass<Building_ClimateControl>()
+                    Map.listerBuildings.AllBuildingsColonistOfClass<Building_ClimateControl>()
                         .Where(unit => unit.Position == center))
             {
                 _climateControl = unit;
                 break;
             }
-            var room = RoomQuery.RoomAt(center);
+            var room = RoomQuery.RoomAt(center, Map);
             if (room == null || room.UsesOutdoorTemperature) return;
 
             if (_climateControl == null) return;

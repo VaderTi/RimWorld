@@ -26,21 +26,30 @@
 				<volume>(0.25,0.4,0.7)</volume>
 				<offset>(0,0,-0.1)</offset>
 			</shadowData>
+			<damageData>
+				<rect>(0.234375,0,0.515625,0.984375)</rect>
+				<cornerTL>Damage/Corner</cornerTL>
+				<cornerTR>Damage/Corner</cornerTR>
+				<cornerBL>Damage/Corner</cornerBL>
+				<cornerBR>Damage/Corner</cornerBR>
+			</damageData>
 		</graphicData>
-		<altitudeLayer>BuildingTall</altitudeLayer>
+		<altitudeLayer>Building</altitudeLayer>
 		<passability>PassThroughOnly</passability>
 		<pathCost>40</pathCost>
+		<blockWind>true</blockWind>
 		<rotatable>false</rotatable>
 		<fillPercent>0.4</fillPercent>
 		<statBases>
-			<WorkToMake>1000</WorkToMake>
+			<WorkToBuild>1000</WorkToBuild>
 			<MaxHitPoints>100</MaxHitPoints>
+			<Mass>6</Mass>
 			<Flammability>0.2</Flammability>
 		</statBases>
 		<tickerType>Rare</tickerType>
 		<costList>
 			<Steel>100</Steel>
-			<Components>5</Components>
+			<Component>5</Component>
 		</costList>
 		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
 		<drawPlaceWorkersWhileSelected>true</drawPlaceWorkersWhileSelected>
