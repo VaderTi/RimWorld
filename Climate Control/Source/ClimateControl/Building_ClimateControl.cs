@@ -1,22 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using RimWorld;
 using UnityEngine;
 using Verse;
 
-namespace ClimateControl
+namespace GCRD
 {
-    public enum Status
+    internal enum Status
     {
         Waiting,
         Heating,
         Cooling,
         Outdoor
     }
-    // ReSharper disable once UnusedMember.Global
-    // ReSharper disable once InconsistentNaming
-    // ReSharper disable once ClassNeverInstantiated.Global
+
     [StaticConstructorOnStartup]
     internal class Building_ClimateControl : Building
     {
@@ -56,11 +54,11 @@ namespace ClimateControl
             _txUiMaxTempPlus = ContentFinder<Texture2D>.Get("UI/Commands/UI_MaxPlus");
         }
 
-        public override void SpawnSetup(Map map)
+        public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
-            base.SpawnSetup(map);
+            base.SpawnSetup(map, respawningAfterLoad);
 
-            GetTextures();
+            LongEventHandler.ExecuteWhenFinished(GetTextures);
 
             _txtMinus = Prefs.TemperatureMode == TemperatureDisplayMode.Celsius ? "-1°C" : "-2°F";
             _txtPlus = Prefs.TemperatureMode == TemperatureDisplayMode.Celsius ? "1°C" : "2°F";
@@ -87,14 +85,14 @@ namespace ClimateControl
 
             _powerTrader = GetComp<CompPowerTrader>();
 
-            _room = RoomQuery.RoomAt(Position, Map);
+            _room = RegionAndRoomQuery.RoomAt(Position, Map);
         }
 
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Values.LookValue(ref _minComfortTemp, "minComfortTemp");
-            Scribe_Values.LookValue(ref _maxComfortTemp, "maxComfortTemp");
+            Scribe_Values.Look(ref _minComfortTemp, "minComfortTemp");
+            Scribe_Values.Look(ref _maxComfortTemp, "maxComfortTemp");
         }
 
         public override void TickRare()
@@ -104,7 +102,7 @@ namespace ClimateControl
             _txtMinus = Prefs.TemperatureMode == TemperatureDisplayMode.Celsius ? "-1°C" : "-2°F";
             _txtPlus = Prefs.TemperatureMode == TemperatureDisplayMode.Celsius ? "1°C" : "2°F";
 
-            _room = RoomQuery.RoomAt(Position, Map);
+            _room = RegionAndRoomQuery.RoomAt(Position, Map);
 
             if (!_powerTrader.PowerOn || _room == null || _room.UsesOutdoorTemperature)
             {
@@ -141,17 +139,17 @@ namespace ClimateControl
 
             if (Mathf.Abs(diffTemp) < 3) energyMul += 0.5f;
 
-            var efficiencyLoss = EfficiencyLossPerDegreeDifference*Mathf.Abs(diffTemp);
-            var enegyLimit = diffTemp*_room.CellCount*energyMul*0.3333f;
-            var needPower = Mathf.Abs(enegyLimit*(powerMod + efficiencyLoss));
+            var efficiencyLoss = EfficiencyLossPerDegreeDifference * Mathf.Abs(diffTemp);
+            var energyLimit = diffTemp * _room.CellCount * energyMul * 0.3333f;
+            var needPower = Mathf.Abs(energyLimit * (powerMod + efficiencyLoss)) + 1.0f;
 
-            _powerTrader.PowerOutput = -needPower;
-            ChangeTemp(enegyLimit);
+            _powerTrader.PowerOutput = -needPower * 5;
+            ChangeTemp(energyLimit);
         }
 
         private void ChangeTemp(float energy)
         {
-            _room.PushHeat(energy);
+            GenTemperature.PushHeat(Position, Map, energy);
         }
 
         private void MinTempMinus()
@@ -178,18 +176,13 @@ namespace ClimateControl
 
         public override IEnumerable<Gizmo> GetGizmos()
         {
-            //var baseGizmos = _powerTrader.CompGetGizmosExtra().ToList();
-            //foreach (var t in from t in baseGizmos
-            //    let baseGizmo = t
-            //    where baseGizmo == null || baseGizmo.defaultLabel != "CommandTogglePowerLabel".Translate()
-            //    select t)
-            //{
-            //    yield return t;
-            //}
+            var baseGizmos = base.GetGizmos().ToList();
 
-            foreach (var c in _powerTrader.CompGetGizmosExtra())
-                yield return c;
-
+            foreach (var t in from t in baseGizmos
+                let baseGizmo = t
+                where baseGizmo == null || baseGizmo.ToString() != "CommandTogglePowerLabel".Translate()
+                select t)
+                yield return t;
 
             var actionMinTempMinus = new Command_Action
             {
@@ -242,36 +235,35 @@ namespace ClimateControl
 
             if (_powerTrader.PowerNet.hasPowerSource)
             {
-                string statusstring;
+                var statusString = _txtStatusWaiting;
                 switch (WorkStatus)
                 {
-                    case Status.Waiting:
-                        statusstring = _txtStatusWaiting;
-                        break;
                     case Status.Heating:
-                        statusstring = _txtStatusHeating;
+                        statusString = _txtStatusHeating;
                         break;
                     case Status.Cooling:
-                        statusstring = _txtStatusCooling;
+                        statusString = _txtStatusCooling;
                         break;
                     case Status.Outdoor:
-                        statusstring = _txtStatusOutdoor;
+                        statusString = _txtStatusOutdoor;
                         break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
                 }
-                var pcrs = (int) (_powerTrader.PowerNet.CurrentEnergyGainRate()/CompPower.WattsToWattDaysPerTick);
-                stringBuilder.AppendLine(_txtStatus + ": " + statusstring);
-                stringBuilder.AppendLine(_txtPowerNeeded + ": " + -(int) _powerTrader.PowerOutput + " " + _txtWatt);
+
+                var pcrs = (int) (_powerTrader.PowerNet.CurrentEnergyGainRate() / CompPower.WattsToWattDaysPerTick);
+                stringBuilder.AppendLine(_txtStatus + ": " + statusString);
+                stringBuilder.AppendLine(_txtPowerNeeded + ": " + -Mathf.FloorToInt(_powerTrader.PowerOutput) + " " +
+                                         _txtWatt);
                 stringBuilder.AppendLine(_txtMinComfortTemp + ": " + _minComfortTemp.ToStringTemperature("F0"));
                 stringBuilder.AppendLine(_txtMaxComfortTemp + ": " + _maxComfortTemp.ToStringTemperature("F0"));
-                stringBuilder.AppendLine(string.Format(_txtPowerConnectedRateStored, pcrs, _powerTrader.PowerNet.CurrentStoredEnergy().ToString("F0")));
+                stringBuilder.AppendLine(string.Format(_txtPowerConnectedRateStored, pcrs,
+                    _powerTrader.PowerNet.CurrentStoredEnergy().ToString("F0")));
             }
             else
             {
                 stringBuilder.AppendLine(_txtPowerNotConnected);
             }
-            return stringBuilder.ToString();
+
+            return stringBuilder.ToString().TrimEndNewlines();
         }
     }
 }

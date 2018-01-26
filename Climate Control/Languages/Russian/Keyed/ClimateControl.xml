@@ -1,14 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
-	<Watt>Вт</Watt>
-	<MinTempMinus>Снижение минимальной комфортной температуры</MinTempMinus>
-	<MinTempPlus>Повышение минимальной комфортной температуры</MinTempPlus>
-	<MaxTempMinus>Снижение максимальной комфортной температуры</MaxTempMinus>
-	<MaxTempPlus>Повышение максимальной комфортной температуры</MaxTempPlus>
+	<MinTempMinus>Понизить минимальную комфортную температуру</MinTempMinus>
+	<MinTempPlus>Повысить минимальную комфортную температуру</MinTempPlus>
+	<MaxTempMinus>Понизить максимальную комфортную температуру</MaxTempMinus>
+	<MaxTempPlus>Повысить максимальную комфортную температуру</MaxTempPlus>
 	
 	<Status>Статус</Status>
-	<StatusWaiting>Бездействует</StatusWaiting>
-	<StatusHeating>Обогревает</StatusHeating>
+	<StatusWaiting>Ожидает</StatusWaiting>
+	<StatusHeating>Нагревает</StatusHeating>
 	<StatusCooling>Охлаждает</StatusCooling>
 	<StatusOutdoor>Установлен снаружи</StatusOutdoor>
 	

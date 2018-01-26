@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<Buildings>
+<Defs>
 
 	<ThingDef Name="BuildingBase" Abstract="True">
 		<category>Building</category>
@@ -11,12 +11,14 @@
 		<repairEffect>Repair</repairEffect>
 		<leaveResourcesWhenKilled>true</leaveResourcesWhenKilled>
 		<filthLeaving>BuildingRubble</filthLeaving>
+			<statBases>
+				<SellPriceFactor>0.70</SellPriceFactor>
+			</statBases>
 	</ThingDef>
 
 	<ThingDef ParentName="BuildingBase">
-		<thingClass>ClimateControl.Building_ClimateControl</thingClass>
 		<defName>ClimateControl</defName>
-		<designationCategory>Temperature</designationCategory>
+		<thingClass>GCRD.Building_ClimateControl</thingClass>
 		<label>Климат контроль</label>
 		<description>Система климат контроля.</description>
 		<graphicData>
@@ -34,6 +36,7 @@
 				<cornerBR>Damage/Corner</cornerBR>
 			</damageData>
 		</graphicData>
+		<minifiedDef>MinifiedFurniture</minifiedDef>
 		<altitudeLayer>Building</altitudeLayer>
 		<passability>PassThroughOnly</passability>
 		<pathCost>40</pathCost>
@@ -43,8 +46,8 @@
 		<statBases>
 			<WorkToBuild>1000</WorkToBuild>
 			<MaxHitPoints>100</MaxHitPoints>
-			<Mass>6</Mass>
-			<Flammability>0.2</Flammability>
+			<Mass>10</Mass>
+			<Flammability>0.25</Flammability>
 		</statBases>
 		<tickerType>Rare</tickerType>
 		<costList>
@@ -52,19 +55,23 @@
 			<Component>5</Component>
 		</costList>
 		<terrainAffordanceNeeded>Heavy</terrainAffordanceNeeded>
-		<drawPlaceWorkersWhileSelected>true</drawPlaceWorkersWhileSelected>
 		<placeWorkers>
-			<li>ClimateControl.PlaceWorker_ClimateControl</li>
+			<li>GCRD.PlaceWorker_ClimateControl</li>
 		</placeWorkers>
+		<drawPlaceWorkersWhileSelected>true</drawPlaceWorkersWhileSelected>
 		<comps>
 			<li Class="CompProperties_Power">
 				<compClass>CompPowerTrader</compClass>
 				<startElectricalFires>false</startElectricalFires>
 			</li>
 			<li Class="CompProperties_Flickable"/>
-			<li Class="CompProperties_TempControl"/>
 			<li Class="CompProperties_Breakdownable"/>
 		</comps>
+		<designationCategory>Temperature</designationCategory>
+		<researchPrerequisites>
+			<li>Electricity</li>
+		</researchPrerequisites>
+		<constructionSkillPrerequisite>5</constructionSkillPrerequisite>
 	</ThingDef>
 
-</Buildings>
+</Defs>

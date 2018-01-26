@@ -3,26 +3,25 @@ using System.Linq;
 using UnityEngine;
 using Verse;
 
-namespace ClimateControl
+namespace GCRD
 {
-    // ReSharper disable once UnusedMember.Global
-    // ReSharper disable once InconsistentNaming
     internal class PlaceWorker_ClimateControl : PlaceWorker
     {
         private Building_ClimateControl _climateControl;
 
         public override void DrawGhost(ThingDef def, IntVec3 center, Rot4 rot)
         {
-           foreach (
+            foreach (
                 var unit in
-                    Map.listerBuildings.AllBuildingsColonistOfClass<Building_ClimateControl>()
-                        .Where(unit => unit.Position == center))
+                Find.VisibleMap.listerBuildings.AllBuildingsColonistOfClass<Building_ClimateControl>()
+                    .Where(unit => unit.Position == center))
             {
                 _climateControl = unit;
                 break;
             }
-            var room = RoomQuery.RoomAt(center, Map);
-            if (room == null || room.UsesOutdoorTemperature) return;
+
+            var roomGroup = center.GetRoomGroup(Find.VisibleMap);
+            if (roomGroup == null || roomGroup.UsesOutdoorTemperature) return;
 
             if (_climateControl == null) return;
             var status = _climateControl.WorkStatus;
@@ -45,7 +44,7 @@ namespace ClimateControl
                     throw new ArgumentOutOfRangeException();
             }
 
-            GenDraw.DrawFieldEdges(room.Cells.ToList(), color);
+            GenDraw.DrawFieldEdges(roomGroup.Cells.ToList(), color);
         }
     }
 }
