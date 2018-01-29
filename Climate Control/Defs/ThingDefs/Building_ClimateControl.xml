@@ -17,8 +17,8 @@
 	</ThingDef>
 
 	<ThingDef ParentName="BuildingBase">
-		<defName>ClimateControl</defName>
 		<thingClass>GCRD.Building_ClimateControl</thingClass>
+		<defName>ClimateControl</defName>
 		<label>Климат контроль</label>
 		<description>Система климат контроля.</description>
 		<graphicData>

@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using RimWorld;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using RimWorld;
 using UnityEngine;
 using Verse;
 
+// ReSharper disable once CheckNamespace
 namespace GCRD
 {
     internal enum Status
@@ -16,6 +18,8 @@ namespace GCRD
     }
 
     [StaticConstructorOnStartup]
+    // ReSharper disable once ClassNeverInstantiated.Global
+    // ReSharper disable once InconsistentNaming
     internal class Building_ClimateControl : Building
     {
         private const float EfficiencyLossPerDegreeDifference = 0.007692308f;
@@ -77,7 +81,6 @@ namespace GCRD
 
             _txtMinComfortTemp = "MinComfortTemp".Translate();
             _txtMaxComfortTemp = "MaxComfortTemp".Translate();
-
 
             _txtPowerNotConnected = "PowerNotConnected".Translate();
             _txtPowerNeeded = "PowerNeeded".Translate();
@@ -179,9 +182,9 @@ namespace GCRD
             var baseGizmos = base.GetGizmos().ToList();
 
             foreach (var t in from t in baseGizmos
-                let baseGizmo = t
-                where baseGizmo == null || baseGizmo.ToString() != "CommandTogglePowerLabel".Translate()
-                select t)
+                              let baseGizmo = t
+                              where baseGizmo == null || baseGizmo.ToString() != "CommandTogglePowerLabel".Translate()
+                              select t)
                 yield return t;
 
             var actionMinTempMinus = new Command_Action
@@ -194,7 +197,6 @@ namespace GCRD
             };
             yield return actionMinTempMinus;
 
-
             var actionMinTempPlus = new Command_Action
             {
                 icon = _txUiMinTempPlus,
@@ -205,7 +207,6 @@ namespace GCRD
             };
             yield return actionMinTempPlus;
 
-
             var actionMaxTempMinus = new Command_Action
             {
                 icon = _txUiMaxTempMinus,
@@ -215,7 +216,6 @@ namespace GCRD
                 action = MaxTempMinus
             };
             yield return actionMaxTempMinus;
-
 
             var actionMaxTempPlus = new Command_Action
             {
@@ -235,27 +235,36 @@ namespace GCRD
 
             if (_powerTrader.PowerNet.hasPowerSource)
             {
-                var statusString = _txtStatusWaiting;
+                string statusString;
                 switch (WorkStatus)
                 {
+                    case Status.Waiting:
+                        statusString = _txtStatusWaiting;
+                        break;
+
                     case Status.Heating:
                         statusString = _txtStatusHeating;
                         break;
+
                     case Status.Cooling:
                         statusString = _txtStatusCooling;
                         break;
+
                     case Status.Outdoor:
                         statusString = _txtStatusOutdoor;
                         break;
+
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
 
-                var pcrs = (int) (_powerTrader.PowerNet.CurrentEnergyGainRate() / CompPower.WattsToWattDaysPerTick);
                 stringBuilder.AppendLine(_txtStatus + ": " + statusString);
                 stringBuilder.AppendLine(_txtPowerNeeded + ": " + -Mathf.FloorToInt(_powerTrader.PowerOutput) + " " +
                                          _txtWatt);
                 stringBuilder.AppendLine(_txtMinComfortTemp + ": " + _minComfortTemp.ToStringTemperature("F0"));
                 stringBuilder.AppendLine(_txtMaxComfortTemp + ": " + _maxComfortTemp.ToStringTemperature("F0"));
-                stringBuilder.AppendLine(string.Format(_txtPowerConnectedRateStored, pcrs,
+                stringBuilder.AppendLine(string.Format(_txtPowerConnectedRateStored,
+                    (int)(_powerTrader.PowerNet.CurrentEnergyGainRate() / CompPower.WattsToWattDaysPerTick),
                     _powerTrader.PowerNet.CurrentStoredEnergy().ToString("F0")));
             }
             else

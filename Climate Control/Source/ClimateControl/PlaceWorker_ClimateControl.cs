@@ -3,8 +3,11 @@ using System.Linq;
 using UnityEngine;
 using Verse;
 
+// ReSharper disable once CheckNamespace
 namespace GCRD
 {
+    // ReSharper disable once InconsistentNaming
+    // ReSharper disable once UnusedMember.Global
     internal class PlaceWorker_ClimateControl : PlaceWorker
     {
         private Building_ClimateControl _climateControl;
@@ -26,20 +29,24 @@ namespace GCRD
             if (_climateControl == null) return;
             var status = _climateControl.WorkStatus;
 
-            var color = Color.white;
+            Color color;
             switch (status)
             {
                 case Status.Waiting:
                     color = new Color(1f, 0.7f, 0.0f, 0.5f);
                     break;
+
                 case Status.Heating:
-                    color = GenTemperature.ColorRoomHot;
+                    color = new Color(1f, 0.0f, 0.0f, 0.3f);
                     break;
+
                 case Status.Cooling:
-                    color = GenTemperature.ColorRoomCold;
+                    color = new Color(0.0f, 0.0f, 1f, 0.3f);
                     break;
+
                 case Status.Outdoor:
-                    break;
+                    return;
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
